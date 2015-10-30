@@ -127,9 +127,9 @@ void GameScene::initUI()
 		}
 	}
 
-	Boss* pBoss = Boss::create();
-	pBoss->setPosition(Vec2(300, 300));
-	_pBackGround->addChild(pBoss, Constants::ZORDER_MONSTER);
+	_pBoss = Boss::create();
+	_pBoss->setPosition(Vec2(300, 300));
+	_pBackGround->addChild(_pBoss, Constants::ZORDER_MONSTER);
 
 }
 

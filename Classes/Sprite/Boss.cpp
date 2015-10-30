@@ -131,9 +131,10 @@ void Boss::bossAtk()
 {
 	Vec2 center = Vec2(Constants::DESIGN_WIDTH / 2, Constants::DESIGN_HEIGHT / 2);
 	center = _pBackGround->convertToNodeSpace(center);
-	Skill* pSkill = Skill::create(0);
+	Skill* pSkill = Skill::create(2);
 	GameService::getInstance()->getGameScene()->getBackGround()->addChild(pSkill);
 	pSkill->setPosition(center);
+	pSkill->skillEffect();
 
 
 }

@@ -9,7 +9,7 @@ USING_NS_CC;
 #include "Sprite/Bubble.h"
 
 
-
+class Boss;
 class Joystick;
 class GameScene : public Layer
 {
@@ -24,6 +24,8 @@ public:
 	CC_SYNTHESIZE(vector<Rect>, collideRects, CollideRects);
 	CC_SYNTHESIZE(Joystick*, _pLeftJoystick, LeftJoystick);
 	CC_SYNTHESIZE(Joystick*, _pRightJoystick, RightJoystick);
+
+	CC_SYNTHESIZE(Boss*, _pBoss, Boss);
 	
 	void addBubble(Bubble* pBubble);
 	void removeBubble(Bubble* pBubble);

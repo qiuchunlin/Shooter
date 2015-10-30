@@ -10,9 +10,11 @@ class Skill : public Sprite
 {
 public:
 	static Skill* create(int nSkillId);
+	void skillEffect();
 protected:
 	bool init();
 	void skill1Attack(Armature* pNode);
+	void skill2Attack(Armature* pNode);
 protected:
 
 private:
