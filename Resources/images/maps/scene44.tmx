@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="30" height="20" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="bg04" tilewidth="64" tileheight="64">
+  <image source="bg04.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="65" name="jianzhu4_shuiguan02" tilewidth="87" tileheight="171">
+  <image source="jianzhu4_shuiguan02.png" width="87" height="171"/>
+ </tileset>
+ <tileset firstgid="66" name="jianzhu4_shuiguan01" tilewidth="113" tileheight="223">
+  <image source="jianzhu4_shuiguan01.png" width="113" height="223"/>
+ </tileset>
+ <tileset firstgid="67" name="jianzhu4_shuiguan03" tilewidth="73" tileheight="166">
+  <image source="jianzhu4_shuiguan03.png" width="73" height="166"/>
+ </tileset>
+ <tileset firstgid="68" name="jianzhu4_shuiguan03_2" tilewidth="58" tileheight="128">
+  <image source="jianzhu4_shuiguan03_2.png" width="58" height="128"/>
+ </tileset>
+ <tileset firstgid="69" name="jianzhu4_shuiguan05_3" tilewidth="320" tileheight="79">
+  <image source="jianzhu4_shuiguan05_3.png" width="320" height="79"/>
+ </tileset>
+ <tileset firstgid="70" name="jianzhu4_shuiguan08" tilewidth="80" tileheight="320">
+  <image source="jianzhu4_shuiguan08.png" width="80" height="320"/>
+ </tileset>
+ <tileset firstgid="71" name="jianzhu4_shuiguan05_4" tilewidth="80" tileheight="320">
+  <image source="jianzhu4_shuiguan05_4.png" width="80" height="320"/>
+ </tileset>
+ <tileset firstgid="72" name="jianzhu4_shuiguan05" tilewidth="94" tileheight="95">
+  <image source="jianzhu4_shuiguan05.png" width="94" height="95"/>
+ </tileset>
+ <tileset firstgid="73" name="jianzhu4_shuiguan07" tilewidth="94" tileheight="95">
+  <image source="jianzhu4_shuiguan07.png" width="94" height="95"/>
+ </tileset>
+ <tileset firstgid="74" name="jianzhu4_shuiguan05_2" tilewidth="120" tileheight="115">
+  <image source="jianzhu4_shuiguan05_2.png" width="120" height="115"/>
+ </tileset>
+ <tileset firstgid="75" name="jianzhu4_shuiguan06" tilewidth="120" tileheight="115">
+  <image source="jianzhu4_shuiguan06.png" width="120" height="115"/>
+ </tileset>
+ <tileset firstgid="76" name="jianzhu4_tizi" tilewidth="65" tileheight="203">
+  <image source="jianzhu4_tizi.png" width="65" height="203"/>
+ </tileset>
+ <tileset firstgid="77" name="jianzhu4_yinying" tilewidth="192" tileheight="101">
+  <image source="jianzhu4_yinying.png" width="192" height="101"/>
+ </tileset>
+ <tileset firstgid="78" name="jianzhu4_men02" tilewidth="300" tileheight="153">
+  <image source="jianzhu4_men02.png" width="300" height="153"/>
+ </tileset>
+ <tileset firstgid="79" name="jianzhu4_men01" tilewidth="300" tileheight="153">
+  <image source="jianzhu4_men01.png" width="300" height="153"/>
+ </tileset>
+ <tileset firstgid="80" name="jianzhu4_xie02" tilewidth="234" tileheight="196">
+  <image source="jianzhu4_xie02.png" width="234" height="196"/>
+ </tileset>
+ <tileset firstgid="81" name="jianzhu4_xie04" tilewidth="192" tileheight="132">
+  <image source="jianzhu4_xie04.png" width="192" height="132"/>
+ </tileset>
+ <tileset firstgid="82" name="jianzhu4_xie03" tilewidth="167" tileheight="297">
+  <image source="jianzhu4_xie03.png" width="167" height="297"/>
+ </tileset>
+ <tileset firstgid="83" name="jianzhu4_xie01" tilewidth="323" tileheight="116">
+  <image source="jianzhu4_xie01.png" width="323" height="116"/>
+ </tileset>
+ <tileset firstgid="84" name="jianzhu4_shuiguan09" tilewidth="64" tileheight="90">
+  <image source="jianzhu4_shuiguan09.png" width="64" height="90"/>
+ </tileset>
+ <tileset firstgid="85" name="jianzhu4_shuiguan10" tilewidth="83" tileheight="64">
+  <image source="jianzhu4_shuiguan10.png" width="83" height="64"/>
+ </tileset>
+ <tileset firstgid="86" name="jianzhu4_shuiguan11" tilewidth="83" tileheight="64">
+  <image source="jianzhu4_shuiguan11.png" width="83" height="64"/>
+ </tileset>
+ <tileset firstgid="87" name="jianzhu4_keng03" tilewidth="293" tileheight="139">
+  <image source="jianzhu4_keng03.png" width="293" height="139"/>
+ </tileset>
+ <tileset firstgid="88" name="jianzhu_xiangzi05" tilewidth="150" tileheight="170">
+  <image source="jianzhu_xiangzi05.png" width="150" height="170"/>
+ </tileset>
+ <tileset firstgid="89" name="jianzhu_xiangzi06" tilewidth="90" tileheight="113">
+  <image source="jianzhu_xiangzi06.png" width="90" height="113"/>
+ </tileset>
+ <tileset firstgid="90" name="jianzhu_xiangzi02" tilewidth="122" tileheight="126">
+  <image source="jianzhu_xiangzi02.png" width="122" height="126"/>
+ </tileset>
+ <tileset firstgid="91" name="jianzhu_xiangzi03" tilewidth="122" tileheight="76">
+  <image source="jianzhu_xiangzi03.png" width="122" height="76"/>
+ </tileset>
+ <tileset firstgid="92" name="jianzhu2_xiangzi0" tilewidth="192" tileheight="168">
+  <image source="jianzhu2_xiangzi0.png" width="192" height="168"/>
+ </tileset>
+ <tileset firstgid="93" name="jianzhu_xiangzi04" tilewidth="183" tileheight="126">
+  <image source="jianzhu_xiangzi04.png" width="183" height="126"/>
+ </tileset>
+ <tileset firstgid="94" name="jianzhu_xiangzi01" tilewidth="71" tileheight="80">
+  <image source="jianzhu_xiangzi01.png" width="71" height="80"/>
+ </tileset>
+ <tileset firstgid="95" name="jianzhu_xiangzi07" tilewidth="92" tileheight="112">
+  <image source="jianzhu_xiangzi07.png" width="92" height="112"/>
+ </tileset>
+ <tileset firstgid="96" name="jianzhu_qiang01" tilewidth="92" tileheight="54">
+  <image source="jianzhu_qiang01.png" width="92" height="54"/>
+ </tileset>
+ <layer name="background" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   eJylledOxDAQhA2iHJ0YAjhUiQ4SiHIgjvb+b8VY8opltE7s48enc+JLZjNjr0fOuVEhM2BzgL0MsxU6zAnYmpL5f+jOgf0pYd2cL8wKWAVr4LSSdUO3xqtt0IIOhPTbAA8ewKO6btR4x9Ct8eoAHKp3Nkr/DUyMerqku0i6NX6dgfP0Pm9oBxp36ns33N/1HuefwDMYk08+zee8DDQfSFv7vEuZxbl38AE+jXr1WLzUdXlDR2cb7x+BY8rstoc7cE8a4o2uyzvbJ5m7AJeUWUmv0F6yN1aecl/nJzVKVkO6C2CZvNQ+argGXaP8X7Iq6VGtkR1nGqgG9r2huZIe1Rp5coY5XSuHOFfao3jPWh73fS/rlvao3DdM0v1rcOP694empkdpPb0/4/WVqzvb4vOytvX+HBu+8joS35Zc/fkan5e1ba193qMyfgGv7rfv1+qW5qF7V9T+At8uf84N8QOa4zYM
+  </data>
+ </layer>
+ <objectgroup name="yingzi" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_yinying.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="77" x="1143" y="289">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+  <object gid="77" x="778" y="293">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+  <object gid="77" x="1465" y="294">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="shuiguanover1" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan03.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="67" x="2245" y="548"/>
+ </objectgroup>
+ <objectgroup name="shuiguanover2" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan03.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="68" x="2350" y="540"/>
+ </objectgroup>
+ <objectgroup name="shuiguanoverheng" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan05_3.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="69" x="1506" y="958">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+  <object gid="69" x="1188" y="958">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+  <object gid="69" x="1825" y="958">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+  <object gid="69" x="768" y="242">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+  <object gid="69" x="1084" y="242">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+  <object gid="69" x="1263" y="242">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+  <object gid="69" x="1668" y="636">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="shuiguanovershuleft" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan08.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="70" x="1575" y="541">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="shuiguanovershuright" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan05_4.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="71" x="1067" y="1322">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+  <object gid="71" x="1067" y="1641">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="guaiyouxia" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan05.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="72" x="2321" y="835"/>
+ </objectgroup>
+ <objectgroup name="guaizuoxia" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan07.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="73" x="1574" y="636"/>
+ </objectgroup>
+ <objectgroup name="guaizuoshang" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan05_2.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="74" x="1068" y="994">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="guaiyoushang" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan06.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="75" x="1534" y="278">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="tizi" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_tizi.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="76" x="2116" y="698">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="door1" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_men02.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="78" x="175" y="383"/>
+ </objectgroup>
+ <objectgroup name="door2" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_men01.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="79" x="113" y="1024">
+   <properties>
+    <property name="groundZ" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="blood1" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_xie02.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="80" x="833" y="479"/>
+  <object gid="80" x="746" y="948"/>
+  <object gid="80" x="1195" y="821"/>
+  <object gid="80" x="793" y="1373"/>
+ </objectgroup>
+ <objectgroup name="blood2" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_xie04.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="81" x="547" y="584"/>
+ </objectgroup>
+ <objectgroup name="blood3" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_xie03.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="82" x="1392" y="587"/>
+ </objectgroup>
+ <objectgroup name="blood4" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_xie01.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="83" x="-92" y="1200"/>
+  <object gid="83" x="1703" y="836"/>
+  <object gid="83" x="-53" y="563"/>
+ </objectgroup>
+ <objectgroup name="jie1" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan09.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="84" x="1185" y="958">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+  <object gid="84" x="1471" y="958">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+  <object gid="84" x="1791" y="957">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+  <object gid="84" x="1835" y="636">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+  <object gid="84" x="1366" y="242">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+  <object gid="84" x="1049" y="242">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="jie2" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan10.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="85" x="1579" y="543">
+   <properties>
+    <property name="groundZ" value="3"/>
+   </properties>
+  </object>
+  <object gid="85" x="1579" y="312">
+   <properties>
+    <property name="groundZ" value="3"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="jie3" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan11.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="86" x="1060" y="1327">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+  <object gid="86" x="1060" y="1024">
+   <properties>
+    <property name="groundZ" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="shuiguans" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan02.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="65" x="501" y="412"/>
+  <object gid="65" x="614" y="414"/>
+ </objectgroup>
+ <objectgroup name="shuiguanb" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_shuiguan01.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="66" x="-7" y="448"/>
+ </objectgroup>
+ <objectgroup name="keng" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu4_keng03.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="87" x="694" y="1127"/>
+  <object gid="87" x="1068" y="581"/>
+ </objectgroup>
+ <objectgroup name="blackboxs" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu_xiangzi06.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="89" x="1570" y="228">
+   <properties>
+    <property name="groundZ" value="4"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="blackboxb" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu_xiangzi05.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="88" x="2249" y="1054">
+   <properties>
+    <property name="groundZ" value="3"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="greenboxb" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu_xiangzi02.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="90" x="1121" y="194">
+   <properties>
+    <property name="groundZ" value="3"/>
+   </properties>
+  </object>
+  <object gid="90" x="829" y="194">
+   <properties>
+    <property name="groundZ" value="3"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="greenboxs" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu_xiangzi03.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="91" x="1257" y="194">
+   <properties>
+    <property name="groundZ" value="4"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="greenbox2" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu2_xiangzi0.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="92" x="2217" y="1282">
+   <properties>
+    <property name="groundZ" value="3"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="mutoub" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu_xiangzi04.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="93" x="2128" y="1421">
+   <properties>
+    <property name="groundZ" value="5"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="mutous" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu_xiangzi01.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="94" x="2062" y="1140">
+   <properties>
+    <property name="groundZ" value="3"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="qiangM16" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu_xiangzi07.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="95" x="1571" y="232">
+   <properties>
+    <property name="groundZ" value="10"/>
+   </properties>
+  </object>
+  <object gid="95" x="1289" y="218">
+   <properties>
+    <property name="groundZ" value="10"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="qiangSVD" width="30" height="20">
+  <properties>
+   <property name="filename" value="jianzhu_qiang01.png"/>
+   <property name="groundlayer" value="1"/>
+  </properties>
+  <object gid="96" x="844" y="121">
+   <properties>
+    <property name="groundZ" value="10"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="collide_people" width="30" height="20">
+  <object type="collide" x="-225" y="52" width="329" height="393"/>
+  <object type="collide" x="40" y="18" width="663" height="396"/>
+  <object type="collide" x="441" y="-11" width="329" height="393"/>
+  <object type="collide" x="698" y="59" width="977" height="178"/>
+  <object type="collide" x="1579" y="201" width="404" height="429"/>
+  <object type="collide" x="1066" y="887" width="1048" height="480"/>
+  <object type="collide" x="-18" y="586" width="597" height="440"/>
+  <object type="collide" x="-151" y="1228" width="921" height="192"/>
+  <object type="collide" x="-337" y="355" width="329" height="1029"/>
+  <object type="collide" x="548" y="1291" width="950" height="166"/>
+  <object type="collide" x="1929" y="443" width="299" height="632"/>
+ </objectgroup>
+ <objectgroup name="collide_bullet" width="30" height="20">
+  <object type="collide_bullet" x="-76" y="211" width="779" height="130"/>
+  <object type="collide_bullet" x="547" y="124" width="192" height="175"/>
+  <object type="collide_bullet" x="576" y="70" width="192" height="175"/>
+  <object type="collide_bullet" x="732" y="-45" width="958" height="189"/>
+  <object type="collide_bullet" x="832" y="-9" width="116" height="179"/>
+  <object type="collide_bullet" x="1127" y="-8" width="248" height="177"/>
+  <object type="collide_bullet" x="1573" y="3" width="192" height="175"/>
+  <object type="collide_bullet" x="1663" y="153" width="54" height="307"/>
+  <object type="collide_bullet" x="1699" y="326" width="316" height="176"/>
+  <object type="collide_bullet" x="1152" y="961" width="843" height="373"/>
+  <object type="collide_bullet" x="-26" y="578" width="602" height="337"/>
+  <object type="collide_bullet" x="-16" y="794" width="528" height="181"/>
+  <object type="collide_bullet" x="432" y="835" width="111" height="119"/>
+  <object type="collide_bullet" x="-54" y="1218" width="794" height="75"/>
+ </objectgroup>
+</map>

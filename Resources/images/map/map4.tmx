@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="500" height="500" tilewidth="10" tileheight="10" nextobjectid="139">
+ <tileset firstgid="1" name="map_0003" tilewidth="2400" tileheight="1544" tilecount="1">
+  <image source="map_0003.png" width="2400" height="1544"/>
+ </tileset>
+ <tileset firstgid="2" name="cars" tilewidth="400" tileheight="400" tilecount="2">
+  <image source="cars.png" width="800" height="400"/>
+ </tileset>
+ <tileset firstgid="4" name="Red" tilewidth="10" tileheight="10" tilecount="1">
+  <image source="Red.png" width="10" height="10"/>
+  <tile id="0">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="5" name="Green" tilewidth="10" tileheight="10" tilecount="1">
+  <image source="Green.png" width="10" height="10"/>
+  <tile id="0">
+   <properties>
+    <property name="WalkAble" value="1"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Ground" width="500" height="500">
+  <data encoding="base64" compression="zlib">
+   eJztzqENADAMA7Dm/6dHCwcqhdgXeAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+JF2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOBA2gEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA2kHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6kHQAAAAAAAAAAAIDlAeePAAU=
+  </data>
+ </layer>
+ <layer name="Meta" width="500" height="500" visible="0">
+  <data encoding="base64" compression="zlib">
+   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
+  </data>
+ </layer>
+ <layer name="GroundCar" width="500" height="500">
+  <data encoding="base64" compression="zlib">
+   eJztzkENACAMBDCy+feMgj3hAmkVdC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALiv0gEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIDDOh0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYNTpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfKDSAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABg1OkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQVekAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwrA0ypgAQ
+  </data>
+ </layer>
+ <objectgroup name="Objects">
+  <object id="73" x="1831.34" y="3797.3" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="75" x="1899.34" y="3844.63" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="76" x="2025.34" y="3945.96" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="77" x="1960.67" y="3891.96" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="79" x="2099" y="3909.33" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="80" x="1905" y="3760.67" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="81" x="2034.33" y="3855.33" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="82" x="1973" y="3808" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="90" name="HeroPos" x="1682" y="4100" width="32" height="28"/>
+  <object id="92" x="1983.94" y="3721.3" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="2"/>
+   </properties>
+  </object>
+  <object id="93" x="2035.45" y="3769.79" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="94" x="2099.09" y="3833.42" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="95" x="2165.76" y="3878.88" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="96" x="2823.33" y="3233.42" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="97" x="2896.06" y="3206.15" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="98" x="2959.7" y="3184.94" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="99" x="2838.48" y="3291" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="100" x="2914.24" y="3266.76" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="101" x="2983.94" y="3230.39" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="102" x="3623.33" y="3109.18" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="103" x="3583.94" y="3069.79" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="104" x="3523.33" y="2997.06" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="105" x="3626.36" y="2984.94" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="106" x="3668.79" y="3036.45" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="107" x="3708.18" y="3075.85" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="108" x="3699.09" y="2975.85" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="109" x="3786.97" y="3015.24" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="110" x="3750.61" y="3063.73" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="111" x="3105.15" y="3387.97" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="112" x="3044.55" y="3366.76" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="113" x="2974.85" y="3436.45" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="114" x="3056.67" y="3475.85" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+  <object id="115" x="3056.67" y="3406.15" width="20" height="18">
+   <properties>
+    <property name="MonsterType" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <layer name="Walk" width="500" height="500">
+  <data encoding="base64" compression="zlib">
+   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
+  </data>
+ </layer>
+</map>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ConfigMonster xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<EveryDay>
+		<Level>1</Level>
+		<Hp>1</Hp>
+		<Destory>10</Destory>
+		<Score>8</Score>
+		<Exp>4</Exp>
+		<AttackSpeed>2</AttackSpeed>
+		<AttackRange>300</AttackRange>
+		<SafeDistance>400</SafeDistance>
+		<MoveSpeed>0.5</MoveSpeed>
+		<AiLevel>1</AiLevel>
+		<SkillId1>0</SkillId1>
+		<SkillId2>1</SkillId2>
+		<SkillId3>2</SkillId3>
+		<SkillId4>3</SkillId4>
+		<SkillId5>4</SkillId5>
+	</EveryDay>
+</ConfigMonster>
