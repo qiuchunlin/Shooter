@@ -94,9 +94,9 @@ void  Skill::skillEffect()
 		ArmatureDataManager::getInstance()->addArmatureFileInfo("images/skills/boss_skill/t_sk_0007.ExportJson");
 
 		
-			/*auto releaseAction = CallFuncN::create([=](Node* pNode){
+			auto releaseAction = CallFuncN::create([=](Node* pNode){
 				pNode->removeFromParentAndCleanup(true);
-			});*/
+			});
 
 			auto fireAction = CallFunc::create([=](){
 				float fRoation = _pSkillArmature->getRotation();
@@ -107,7 +107,6 @@ void  Skill::skillEffect()
 				_pSkillArmature->setRotation(fRoation);
 				_pSkillArmature->setPosition(pos);
 				this->addChild(_pSkillArmature);
-				//_pSkillArmature->runAction(Sequence::create(DelayTime::create(1.0f), releaseAction, NULL));
 			});
 
 			Vec2 curPos = GameService::getInstance()->getGameScene()->getBoss()->getPosition();
@@ -121,6 +120,8 @@ void  Skill::skillEffect()
 			this->addChild(_pSkillArmature);
 			this->setPosition(curPos);
 			_pSkillArmature->setRotation(-fAngle);
+        
+            _pSkillArmature->runAction(Sequence::create(DelayTime::create(5.0f), releaseAction, NULL));
 		
 			this->runAction(Sequence::createWithTwoActions(DelayTime::create(1.5f), fireAction));
 

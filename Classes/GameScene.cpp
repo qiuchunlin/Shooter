@@ -4,6 +4,7 @@
 #include "Service/GameService.h"
 #include "Utils/Utils.h"
 #include "Sprite/Boss.h"
+#include "Sprite/HeroSkill.h"
 
 Scene* GameScene::createScene()
 {
@@ -130,6 +131,25 @@ void GameScene::initUI()
 	_pBoss = Boss::create();
 	_pBoss->setPosition(Vec2(300, 300));
 	_pBackGround->addChild(_pBoss, Constants::ZORDER_MONSTER);
+    
+    //HeroSkillUi
+    ui::Button* pBtn = ui::Button::create("images/skills/skill_1.png","images/skills/skill_1.png");
+    pBtn->setTag(1);
+    this->addChild(pBtn,Constants::ZORDER_POP);
+    pBtn->setPosition(Vec2(1060,400));
+    pBtn->addClickEventListener(CC_CALLBACK_1(GameScene::heroSkillCallBack,this));
+    
+    pBtn = ui::Button::create("images/skills/skill_2.png","images/skills/skill_2.png");
+    pBtn->setTag(2);
+    this->addChild(pBtn,Constants::ZORDER_POP);
+    pBtn->setPosition(Vec2(1060,290));
+    pBtn->addClickEventListener(CC_CALLBACK_1(GameScene::heroSkillCallBack,this));
+    
+    pBtn = ui::Button::create("images/skills/skill_3.png","images/skills/skill_3.png");
+    pBtn->setTag(3);
+    this->addChild(pBtn,Constants::ZORDER_POP);
+    pBtn->setPosition(Vec2(1060,180));
+    pBtn->addClickEventListener(CC_CALLBACK_1(GameScene::heroSkillCallBack,this));
 
 }
 
@@ -236,6 +256,23 @@ void GameScene::onTouchMoved(Touch *touch, Event *unused_event)
 
 void GameScene::onTouchEnded(Touch *touch, Event *unused_event)
 {
+
+}
+
+void  GameScene::heroSkillCallBack(cocos2d::Ref* pRef)
+{
+    Node* pNoed = (Node*)pRef;
+    int nTag = pNoed->getTag();
+    if(nTag == 1){
+        HeroSkill* pSkill = HeroSkill::create(1);
+        this->addChild(pSkill,Constants::ZORDER_MONSTER);
+        pSkill->skillEffect();
+        pSkill->setPosition(Vec2(Constants::DESIGN_WIDTH/2, Constants::DESIGN_HEIGHT/2));
+    }else if(nTag == 2){
+        
+    }else if(nTag == 3){
+        
+    }
 
 }
 

@@ -7,7 +7,7 @@ USING_NS_CC;
 #include "Sprite/Monster.h"
 #include "Sprite/Hero.h"
 #include "Sprite/Bubble.h"
-
+#include "ui/CocosGUI.h"
 
 class Boss;
 class Joystick;
@@ -37,6 +37,8 @@ protected:
 	void initUI();
 	void initTouch();
 	void initHero();
+    
+    void heroSkillCallBack(cocos2d::Ref* pNode);
 
 	virtual bool init();
 	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
