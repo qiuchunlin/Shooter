@@ -5,6 +5,7 @@
 #include "Utils/Utils.h"
 #include "Sprite/Boss.h"
 #include "Sprite/HeroSkill.h"
+#include "Utils/LayoutUtil.h"
 
 Scene* GameScene::createScene()
 {
@@ -264,14 +265,16 @@ void  GameScene::heroSkillCallBack(cocos2d::Ref* pRef)
     Node* pNoed = (Node*)pRef;
     int nTag = pNoed->getTag();
     if(nTag == 1){
+    }else if(nTag == 2){
         HeroSkill* pSkill = HeroSkill::create(1);
         this->addChild(pSkill,Constants::ZORDER_MONSTER);
         pSkill->skillEffect();
         pSkill->setPosition(Vec2(Constants::DESIGN_WIDTH/2, Constants::DESIGN_HEIGHT/2));
-    }else if(nTag == 2){
-        
     }else if(nTag == 3){
-        
+        HeroSkill* pSkill = HeroSkill::create(2);
+        _pHero->addChild(pSkill);
+        pSkill->skillEffect();
+        LayoutUtil::layoutParentBottom(pSkill,0,15);
     }
 
 }

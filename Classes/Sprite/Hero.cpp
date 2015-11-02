@@ -487,14 +487,7 @@ void Hero::fire(float targetAngle)
 			break;
 		}
 
-		Bubble* pBubble = Bubble::create();
-		this->getParent()->addChild(pBubble,Constants::ZORDER_MONSTER);
-		GameService::getInstance()->getGameScene()->addBubble(pBubble);
-
-		pBubble->setPosition(bubblePos);
-		pBubble->setRotation(-fAngle);
-
-		auto releaseAction = CallFunc::create([=](){
+        auto releaseAction = CallFunc::create([=](){
 			_pFire->removeFromParentAndCleanup(true);
 			_pFire = nullptr;
 		});
@@ -519,18 +512,36 @@ void Hero::fire(float targetAngle)
 		_pFire->setRotation(90 - fAngle);
 		_pFire->setScale(0.5f);
 
-		fAngle = fAngle * M_PI / 180.0f;
-		float fX = 1200 * cosf(fAngle);
-		float fY = 1200 * sinf(fAngle);
-
-		auto releaseBubble = CallFuncN::create([](Node* pNode){
-			Bubble* pBubble = (Bubble*)pNode;
-			GameService::getInstance()->getGameScene()->removeBubble(pBubble);
-
-			pNode->removeFromParentAndCleanup(true);
-		});
-
-		pBubble->runAction(Sequence::create(MoveBy::create(2.0f, Vec2(fX, fY)), releaseBubble,NULL));
+        for (int i=0; i<3; i++) {
+            Bubble* pBubble = Bubble::create();
+            this->getParent()->addChild(pBubble,Constants::ZORDER_MONSTER);
+            GameService::getInstance()->getGameScene()->addBubble(pBubble);
+            
+            pBubble->setPosition(bubblePos);
+            float bubbleAngle = fAngle;
+            if (i == 1) {
+                bubbleAngle += 15;
+            }
+            else if(i == 2){
+                bubbleAngle -= 15;
+            }
+            
+            pBubble->setRotation(-bubbleAngle);
+            
+            bubbleAngle = bubbleAngle * M_PI / 180.0f;
+            float fX = 1200 * cosf(bubbleAngle);
+            float fY = 1200 * sinf(bubbleAngle);
+            
+            auto releaseBubble = CallFuncN::create([](Node* pNode){
+                Bubble* pBubble = (Bubble*)pNode;
+                GameService::getInstance()->getGameScene()->removeBubble(pBubble);
+                
+                pNode->removeFromParentAndCleanup(true);
+            });
+            
+            pBubble->runAction(Sequence::create(MoveBy::create(2.0f, Vec2(fX, fY)), releaseBubble,NULL));
+        }
+        
 
 	});
 
