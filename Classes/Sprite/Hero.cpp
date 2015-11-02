@@ -88,7 +88,6 @@ void Hero::findMonsterFire()
 	{
 		_runTargetPos = Vec2::ZERO;
 	}
-//	_nLastDirection = 0;
 	fire(_fAngle);
 }
 
@@ -124,7 +123,14 @@ void Hero::run(float angle, bool bIsDirection)
 			}
 		}
 		
-		_pSprite->setFlippedX(targetPos.x < this->getPosition().x);
+		if (angle > 90 && angle < 270)
+		{
+			_pSprite->setFlippedX(true);
+		}
+		else
+		{
+			_pSprite->setFlippedX(false);
+		}
 
 		int nCurDirection = this->getDirection(angle);
 		if (_nLastDirection != nCurDirection)
@@ -392,10 +398,10 @@ void Hero::fire(float targetAngle)
 	if (targetAngle != -1)
 	{
 		nDirection = this->getDirection(targetAngle);
+		
 	}
 
 	auto fireBubble = CallFunc::create([=](){
-
 		float fAngle = 0;
 		Vec2 firePos = _pSprite->getPosition();
 		Vec2 bubblePos = this->getPosition();
@@ -512,7 +518,8 @@ void Hero::fire(float targetAngle)
 		_pFire->setRotation(90 - fAngle);
 		_pFire->setScale(0.5f);
 
-        for (int i=0; i<3; i++) {
+		int nBubbleCount = 1;
+		for (int i = 0; i<nBubbleCount; i++) {
             Bubble* pBubble = Bubble::create();
             this->getParent()->addChild(pBubble,Constants::ZORDER_MONSTER);
             GameService::getInstance()->getGameScene()->addBubble(pBubble);

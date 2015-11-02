@@ -2,7 +2,6 @@
 #include "../Service/GameService.h"
 #include "../GameScene.h"
 #include "../Utils/Utils.h"
-#include "Skill.h"
 #include "../Common/Constants.h"
 
 bool Boss::init()
@@ -16,34 +15,48 @@ bool Boss::init()
 	this->addChild(_pBossArmature);
 
 	_fSpeed = 50;
+	_nTotalHp = 100;
+	_emStatus = Monster_Stand;
+	_emType = Type_Boss;
 
-	auto runatcion = CallFunc::create([=](){
-		_SearchInfo = new PathSearchInfo();
-		_SearchInfo = GameService::getInstance()->getGameScene()->_pPathInfo;
-		_pBackGround = GameService::getInstance()->getGameScene()->getBackGround();
-		this->run();
-	});
+	_SearchInfo = new PathSearchInfo();
+	_SearchInfo = GameService::getInstance()->getGameScene()->_pPathInfo;
+	_pBackGround = GameService::getInstance()->getGameScene()->getBackGround();
 
-	this->runAction(Sequence::createWithTwoActions(DelayTime::create(1.5f), runatcion));
+	this->scheduleUpdate();
+	this->run();
 
-	this->runAction(Sequence::createWithTwoActions(DelayTime::create(2.5f), CallFunc::create(CC_CALLBACK_0(Boss::bossAtk, this))));
+	Vec2 center = Vec2(Constants::DESIGN_WIDTH / 2, Constants::DESIGN_HEIGHT / 2);
+	center = _pBackGround->convertToNodeSpace(center);
+	for (int i = 0; i < 3;i++)
+	{
+		Skill* pSkill = Skill::create(i);
+		GameService::getInstance()->getGameScene()->getBackGround()->addChild(pSkill);
+		pSkill->setPosition(center);
+		_vSkills.pushBack(pSkill);
+	}
+//	this->runAction(Sequence::createWithTwoActions(DelayTime::create(2.5f), CallFunc::create(CC_CALLBACK_0(Boss::bossAtk, this))));
     return true;
 }
 
 void Boss::run()
 {
-	_bIsRun = true;
 	auto runAction = CallFunc::create(CC_CALLBACK_0(Monster::run, this));
 	this->runAction(Sequence::createWithTwoActions(DelayTime::create(0.1f), runAction));
 
 	this->stopActionByTag(100);
 
 	Vec2 heroPos = GameService::getInstance()->getGameScene()->getHero()->getPosition();
+	heroPos = _pBackGround->convertToNodeSpace(heroPos);
 
-	auto nodePosition = _pBackGround->convertToNodeSpace(heroPos);
+	float fDis = this->getPosition().getDistance(heroPos);
+	if (_emStatus != Monster_Stand || fDis < 300)
+	{
+		return;
+	}
 
 	Vec2 monsterPos = this->getPosition();
-	float fAngle = Utils::getPosAngle(nodePosition, monsterPos);
+	float fAngle = Utils::getPosAngle(heroPos, monsterPos);
 	int nDirection = this->getDirection(fAngle);
 	if (fAngle > 90 && fAngle < 270)
 	{
@@ -70,14 +83,14 @@ void Boss::run()
 	////清除之前的路径
 	clearPath();
 
-	nodePosition = Utils::getPosInMap(nodePosition, _pBackGround);
-	PathSprite* targetPath = _SearchInfo->getObjFromInspectArray((int)nodePosition.x, (int)nodePosition.y);
+	heroPos = Utils::getPosInMap(heroPos, _pBackGround);
+	PathSprite* targetPath = _SearchInfo->getObjFromInspectArray((int)heroPos.x, (int)heroPos.y);
 	if (targetPath == nullptr)
 	{
 		targetPath = new PathSprite();
-		targetPath->m_x = nodePosition.x;
-		targetPath->m_y = nodePosition.y;
-		targetPath->_pos = _pBackGround->getLayer("background")->getPositionAt(Vec2(nodePosition.x, nodePosition.y));
+		targetPath->m_x = heroPos.x;
+		targetPath->m_y = heroPos.y;
+		targetPath->_pos = _pBackGround->getLayer("background")->getPositionAt(Vec2(heroPos.x, heroPos.y));
 		_SearchInfo->m_inspectArray[targetPath->m_x][targetPath->m_y] = targetPath;
 	}
 
@@ -121,6 +134,18 @@ int Boss::getDirection(float angle)
 	return nCurDirection;
 }
 
+void Boss::update(float dt)
+{
+	Monster::update(dt);
+	Vec2 heroPos = GameService::getInstance()->getGameScene()->getHero()->getPosition();
+	heroPos = _pBackGround->convertToNodeSpace(heroPos);
+	float fDis = this->getPosition().getDistance(heroPos);
+	if (fDis <= 300 && _emStatus != Monster_Attack || fDis >=600 && _emStatus != Monster_Attack)
+	{
+		this->bossAtk();
+	}
+}
+
 void Boss::attack()
 {
 	
@@ -129,12 +154,52 @@ void Boss::attack()
 
 void Boss::bossAtk()
 {
-	Vec2 center = Vec2(Constants::DESIGN_WIDTH / 2, Constants::DESIGN_HEIGHT / 2);
-	center = _pBackGround->convertToNodeSpace(center);
-	Skill* pSkill = Skill::create(2);
-	GameService::getInstance()->getGameScene()->getBackGround()->addChild(pSkill);
-	pSkill->setPosition(center);
-	pSkill->skillEffect();
+	int nRandom = Utils::random(0, 2);
+//	nRandom = 1;
+	if (_vSkills.at(nRandom)->IsInCd())
+	{
+		return;
+	}
+	Vec2 heroPos = GameService::getInstance()->getGameScene()->getHero()->getPosition();
+	heroPos = _pBackGround->convertToNodeSpace(heroPos);
+
+	Vec2 monsterPos = this->getPosition();
+	float fAngle = Utils::getPosAngle(heroPos, monsterPos);
+	int nDirection = this->getDirection(fAngle);
+	if (fAngle > 90 && fAngle < 270)
+	{
+		_pBossArmature->setScaleX(-1);
+	}
+	else
+	{
+		_pBossArmature->setScaleX(1);
+	}
+
+	if (_nLastDirection != nDirection)
+	{
+		_nLastDirection = nDirection;
+	}
+
+	_pBossArmature->getAnimation()->stop();
+	string sArmtureName = StringUtils::format("m_a0%d", _nLastDirection);
+	_pBossArmature->getAnimation()->play(sArmtureName, -1, 0);
+	_pBossArmature->getAnimation()->pause();
+
+	auto atkAction = CallFunc::create([=](){
+		_pBossArmature->getAnimation()->resume();
+	});
+
+	auto atkFinish = CallFunc::create([=](){
+		_emStatus = Monster_Stand;
+	});
 
 
+	_emStatus = Monster_Attack;
+
+	_vSkills.at(nRandom)->skillEffect();
+	
+
+	this->runAction(Sequence::create(DelayTime::create(1.5f), atkAction, DelayTime::create(1.5f), atkFinish, NULL));
+
+	_nLastDirection = 0;
 }

@@ -8,7 +8,7 @@ USING_NS_CC;
 #include "Sprite/Hero.h"
 #include "Sprite/Bubble.h"
 #include "ui/CocosGUI.h"
-
+#include "Sprite/HeroSkill.h"
 class Boss;
 class Joystick;
 class GameScene : public Layer
@@ -46,7 +46,7 @@ protected:
 	virtual void onTouchEnded(Touch *touch, Event *unused_event);
 	
 private:
-
+	Vector<HeroSkill*> _vHeroSkills;
 };
 
 #endif 

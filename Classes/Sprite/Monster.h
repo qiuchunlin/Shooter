@@ -1,11 +1,13 @@
 #ifndef _SPRITE_MONSTER_MONSTER_
 #define _SPRITE_MONSTER_MONSTER_
 #include "cocos2d.h"
+#include "../Common/Config.h"
 USING_NS_CC;
 using namespace std;
+using namespace Config;
 
 #define MAP_WIDTH 23//要比tmx中的map大
-#define MAP_HEIGHT 20
+#define MAP_HEIGHT 15
 class PathSprite:public Ref
 {
 
@@ -116,7 +118,8 @@ public:
 	CREATE_FUNC(Monster);
 
 	CC_SYNTHESIZE(Sprite*, _pSprite, Sprite);
-	CC_SYNTHESIZE(bool, _bIsRun, IsRun);
+	CC_SYNTHESIZE(MonsterStatus, _emStatus, Status);
+	CC_SYNTHESIZE(MonsterType, _emType, MonsterType);
 	virtual void run();
 protected:
 	bool init();
@@ -146,6 +149,8 @@ protected:
 	PathSearchInfo* _SearchInfo;
 	
 	int _nLastDirection = 0;
+
+	int _nTotalHp = 20;
 
 	TMXTiledMap* _pBackGround;
 

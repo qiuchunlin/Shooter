@@ -2,13 +2,15 @@
 #include "../Service/GameService.h"
 #include "../GameScene.h"
 #include "../Utils/Utils.h"
+#include "../Common/Constants.h"
 
 bool Monster::init()
 {
     if (!Sprite::init()) {
         return  false;
     }
-	_bIsRun = false;
+	_emStatus = Monster_Stand;
+	_emType = Type_Dog;
 
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/monster/m_00080.plist", "images/monster/m_00080.png");
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/hero/t_die_00020.plist", "images/hero/t_die_00020.png");
@@ -37,7 +39,10 @@ bool Monster::init()
 
 void Monster::run()
 {
-	_bIsRun = true;
+	if (_emStatus == Monster_Stand)
+	{
+		_emStatus = Monster_Run;
+	}
 	auto runAction = CallFunc::create(CC_CALLBACK_0(Monster::run, this));
 	this->runAction(Sequence::createWithTwoActions(DelayTime::create(0.1f), runAction));
 
@@ -145,6 +150,7 @@ int Monster::getDirection(float angle)
 
 void Monster::attack()
 {
+	_emStatus = Monster_Attack;
 	this->stopAllActions();
 	Animation* atkAnimation = Animation::create();
 	for (int i = 1; i < 7; ++i)
@@ -161,6 +167,7 @@ void Monster::attack()
 
 void Monster::die()
 {
+	_emStatus = Monster_Die;
 	GameService::getInstance()->getGameScene()->killMonster(this);
 
 	Animation* dieAnimation = Animation::create();
@@ -197,8 +204,13 @@ void Monster::update(float dt)
 		{
 			GameService::getInstance()->getGameScene()->removeBubble(pBubble);
 			pBubble->runAction(Sequence::createWithTwoActions(DelayTime::create(0.2f), releaseAction));
-			this->unscheduleUpdate();
-			this->die();
+			
+			_nTotalHp--;
+			if (_nTotalHp <= 0)
+			{
+				this->unscheduleUpdate();
+				this->die();
+			}			
 			break;
 		}
 	}
@@ -342,6 +354,7 @@ void Monster::clearPath()
 
 void Monster::runAway()
 {
+//	_emStatus = Monster_Run;
 	Vec2 heroPos = GameService::getInstance()->getGameScene()->getHero()->getPosition();
 	heroPos = _pBackGround->convertToNodeSpace(heroPos);
 	float fR = 70;
@@ -374,6 +387,19 @@ void Monster::runAway()
 		}
 	}
 
+	float fSideWidth = 50;
+	if (targetPos.x < fSideWidth || targetPos.x > Constants::DESIGN_WIDTH - fSideWidth)
+	{
+		targetPos.x = heroPos.x - (fRandomX - fR);
+	}
+
+	if (targetPos.y < fSideWidth || targetPos.y > Constants::DESIGN_HEIGHT - fSideWidth)
+	{
+		targetPos.y = -nDriection*sqrtf(fR*fR - (fX - heroPos.x)*(fX - heroPos.x)) + heroPos.y;
+	}
+
+	
+
 	Vec2 monsterPos = this->getPosition();
 	float fAngle = Utils::getPosAngle(targetPos, monsterPos);
 	int nDirection = this->getDirection(fAngle);
@@ -386,7 +412,7 @@ void Monster::runAway()
 		_pSprite->setFlippedX(false);
 	}
 
-	if (_nLastDirection != nDirection)
+	//if (_nLastDirection != nDirection)
 	{
 		_nLastDirection = nDirection;
 		_pSprite->stopAllActions();
@@ -429,7 +455,29 @@ void Monster::autoMove()
 		nRandom = -1;
 	}
 	tarPos.y += nRandom * Utils::random(0, 10);
+
+	float fSideWidth = 50;
+	if (tarPos.x < fSideWidth )
+	{
+		tarPos.x = fSideWidth;
+	}
+	if (tarPos.x > Constants::DESIGN_WIDTH - fSideWidth)
+	{
+		tarPos.x = Constants::DESIGN_WIDTH - fSideWidth;
+	}
+
+	if (tarPos.y < fSideWidth)
+	{
+		tarPos.y = fSideWidth;
+	}
+	if (tarPos.x > Constants::DESIGN_WIDTH - fSideWidth)
+	{
+		tarPos.x = Constants::DESIGN_WIDTH - fSideWidth;
+	}
+
 	float fDis = this->getPosition().getDistance(tarPos);
+
+	
 
 	/*Vec2 monsterPos = this->getPosition();
 	float fAngle = Utils::getPosAngle(tarPos, monsterPos);

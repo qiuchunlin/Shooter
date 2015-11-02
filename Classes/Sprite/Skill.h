@@ -11,14 +11,17 @@ class Skill : public Sprite
 public:
 	static Skill* create(int nSkillId);
 	void skillEffect();
+	bool IsInCd();
 protected:
 	bool init();
+	void update(float delta);
 	void skill1Attack(Armature* pNode);
 	void skill2Attack(Armature* pNode);
 protected:
 
 private:
 	int _nSkillId = 0;
-	Armature* _pSkillArmature = nullptr;
+	float _fCdTime = 0;
+
 };
 #endif

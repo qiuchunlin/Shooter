@@ -12,6 +12,19 @@ namespace Config{
 		Operate_Both,//Ë«Ò¡¸Ë
 	};
 
+	enum MonsterStatus
+	{
+		Monster_Run,
+		Monster_Stand,
+		Monster_Attack,
+		Monster_Die,
+	};
+
+	enum MonsterType
+	{
+		Type_Boss,
+		Type_Dog,
+	};
 	
 }
 #endif

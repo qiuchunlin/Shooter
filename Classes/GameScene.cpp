@@ -35,18 +35,18 @@ void GameScene::initUI()
 {
 	
 	_pLeftJoystick = Joystick::create(true);
-	_pLeftJoystick->setPosition(Vec2(200, 200));
+	_pLeftJoystick->setPosition(Vec2(200, 150));
 	this->addChild(_pLeftJoystick, Constants::ZORDER_UI);
 
 	_pRightJoystick = Joystick::create(false);
-	_pRightJoystick->setPosition(Vec2(900, 200));
+	_pRightJoystick->setPosition(Vec2(900, 150));
 	this->addChild(_pRightJoystick, Constants::ZORDER_UI);
 
-	_pBackGround = TMXTiledMap::create("images/maps/scene001.tmx");
+	_pBackGround = TMXTiledMap::create("images/map/map.tmx");
 	_pBackGround->setPosition(Vec2::ZERO);
 	this->addChild(_pBackGround);
 
-	for (auto& pGroup : _pBackGround->getObjectGroups())
+	/*for (auto& pGroup : _pBackGround->getObjectGroups())
 	{
 		ValueMap& dict = pGroup->getProperties();
 		string sFileName = dict["filename"].asString();
@@ -65,7 +65,7 @@ void GameScene::initUI()
 				pSprite->setPosition(spritePos);
 			}
 		}
-	}
+	}*/
 
 	auto  pCollideGroup = _pBackGround->getObjectGroup("collide_people");
 	for (auto& pItem : pCollideGroup->getObjects())
@@ -92,25 +92,23 @@ void GameScene::initUI()
 	Size _mapSize = _pBackGround->getMapSize();
 	for (int j = 0; j < _mapSize.height; j++) {
 		for (int i = 0; i < _mapSize.width; i++) {
-			Sprite* _sp = _road->getTileAt(Point(i, j));
+			Vec2 pos =  _road->getPositionAt(Vec2(i, j));
+			Rect tileRect = Rect(pos.x, pos.y, _pBackGround->getTileSize().width, _pBackGround->getTileSize().height);
+//			Sprite* _sp = _road->getTileAt(Point(i, j));
 			for (auto& rect : collideRects)
 			{
-				if (_sp->getBoundingBox().intersectsRect(rect))
+				if (tileRect.intersectsRect(rect))
 				{
 					_pPathInfo->m_inspectArray[i][j] = nullptr;
-					_sp = nullptr;
 					break;
 				}
 			}
 
-			if (_sp) {
-				PathSprite* _pathSprite = new PathSprite();
-				_pathSprite->m_x = i;
-				_pathSprite->m_y = j;
-				_pathSprite->_pos = _pBackGround->getLayer("background")->getPositionAt(Vec2(i,j));
-				_pPathInfo->m_inspectArray[i][j] = _pathSprite;//把地图中所有的点一一对应放入检测列表中
-
-			}
+			PathSprite* _pathSprite = new PathSprite();
+			_pathSprite->m_x = i;
+			_pathSprite->m_y = j;
+			_pathSprite->_pos = _road->getPositionAt(Vec2(i, j));
+			_pPathInfo->m_inspectArray[i][j] = _pathSprite;//把地图中所有的点一一对应放入检测列表中
 		}
 	}
 
@@ -128,29 +126,34 @@ void GameScene::initUI()
 			pMonster->setPosition(monsterPos);
 		}
 	}
-
-	_pBoss = Boss::create();
-	_pBoss->setPosition(Vec2(300, 300));
-	_pBackGround->addChild(_pBoss, Constants::ZORDER_MONSTER);
     
     //HeroSkillUi
     ui::Button* pBtn = ui::Button::create("images/skills/skill_1.png","images/skills/skill_1.png");
-    pBtn->setTag(1);
+    pBtn->setTag(0);
     this->addChild(pBtn,Constants::ZORDER_POP);
     pBtn->setPosition(Vec2(1060,400));
     pBtn->addClickEventListener(CC_CALLBACK_1(GameScene::heroSkillCallBack,this));
     
     pBtn = ui::Button::create("images/skills/skill_2.png","images/skills/skill_2.png");
-    pBtn->setTag(2);
+    pBtn->setTag(1);
     this->addChild(pBtn,Constants::ZORDER_POP);
     pBtn->setPosition(Vec2(1060,290));
     pBtn->addClickEventListener(CC_CALLBACK_1(GameScene::heroSkillCallBack,this));
     
     pBtn = ui::Button::create("images/skills/skill_3.png","images/skills/skill_3.png");
-    pBtn->setTag(3);
+    pBtn->setTag(2);
     this->addChild(pBtn,Constants::ZORDER_POP);
     pBtn->setPosition(Vec2(1060,180));
     pBtn->addClickEventListener(CC_CALLBACK_1(GameScene::heroSkillCallBack,this));
+
+	for (int i = 0; i < 3;i++)
+	{
+		HeroSkill* pHeroSkill = HeroSkill::create(i);
+		_vHeroSkills.pushBack(pHeroSkill);
+		this->addChild(pHeroSkill, Constants::ZORDER_MONSTER);
+		pHeroSkill->setPosition(Vec2(Constants::DESIGN_WIDTH / 2, Constants::DESIGN_HEIGHT / 2));
+	}
+	
 
 }
 
@@ -204,6 +207,11 @@ void GameScene::initHero()
 
 	this->addChild(_pHero, Constants::ZORDER_HERO);
 	_pHero->stand();
+
+	_pBoss = Boss::create();
+	_pBoss->setPosition(Vec2(300, 300));
+	_pBackGround->addChild(_pBoss, Constants::ZORDER_MONSTER);
+	_vMonsters.pushBack(_pBoss);
 }
 
 void  GameScene::addBubble(Bubble* pBubble)
@@ -229,10 +237,13 @@ void GameScene::update(float delta)
 	float fCheckSide = 300;
 	for (auto& pMonster:_vMonsters)
 	{
-		Rect checkBox = Rect(pMonster->getPosition().x - fCheckSide, pMonster->getPosition().y - fCheckSide, 2 * fCheckSide, 2 * fCheckSide);
-		if (!pMonster->getIsRun() && checkBox.containsPoint(heroPos))
+		if (pMonster->getMonsterType() != Type_Boss)
 		{
-			pMonster->run();
+			Rect checkBox = Rect(pMonster->getPosition().x - fCheckSide, pMonster->getPosition().y - fCheckSide, 2 * fCheckSide, 2 * fCheckSide);
+			if (pMonster->getStatus() == Monster_Stand && checkBox.containsPoint(heroPos))
+			{
+				pMonster->run();
+			}
 		}
 	}
 }
@@ -264,17 +275,11 @@ void  GameScene::heroSkillCallBack(cocos2d::Ref* pRef)
 {
     Node* pNoed = (Node*)pRef;
     int nTag = pNoed->getTag();
-    if(nTag == 1){
+    if(nTag == 0){
+    }else if(nTag == 1){
+       _vHeroSkills.at(1)->skillEffect();
     }else if(nTag == 2){
-        HeroSkill* pSkill = HeroSkill::create(1);
-        this->addChild(pSkill,Constants::ZORDER_MONSTER);
-        pSkill->skillEffect();
-        pSkill->setPosition(Vec2(Constants::DESIGN_WIDTH/2, Constants::DESIGN_HEIGHT/2));
-    }else if(nTag == 3){
-        HeroSkill* pSkill = HeroSkill::create(2);
-        _pHero->addChild(pSkill);
-        pSkill->skillEffect();
-        LayoutUtil::layoutParentBottom(pSkill,0,15);
+	   _vHeroSkills.at(2)->skillEffect();
     }
 
 }
