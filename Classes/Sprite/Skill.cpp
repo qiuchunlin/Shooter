@@ -40,6 +40,8 @@ void  Skill::skillEffect()
 		return;
 	}
 
+	_nSkillId = 2;
+
 	Vec2 center = Vec2(Constants::DESIGN_WIDTH / 2, Constants::DESIGN_HEIGHT / 2);
 	center = GameService::getInstance()->getGameScene()->getBackGround()->convertToNodeSpace(center);
 
@@ -95,13 +97,30 @@ void  Skill::skillEffect()
 			Armature* pArmature = (Armature*)pNode;
 			pArmature->getAnimation()->play("Animation3");
 		});
+
+		auto checkAction = CallFuncN::create([=](Node* pNode){
+			Rect heroRect = GameService::getInstance()->getGameScene()->getHero()->getHeroBox();
+			Vec2 bombPos = pNode->getPosition();
+			bombPos.x += Constants::DESIGN_WIDTH / 2;
+			bombPos.y += Constants::DESIGN_HEIGHT / 2;
+			bombPos = GameService::getInstance()->getGameScene()->getBackGround()->convertToNodeSpace(bombPos);
+			Rect bombRect = Rect(bombPos.x - 250, bombPos.y - 250, 250, 250);
+			if (bombRect.intersectsRect(heroRect))
+			{
+				GameService::getInstance()->getGameScene()->getHero()->hurt(20);
+			}
+		});
+
+		
+		
+
 		auto releaseAction = CallFuncN::create([=](Node* pNode){
 			pNode->removeFromParentAndCleanup(true);
 		});
 
 		pSkillArmature->runAction(Sequence::create(MoveTo::create(1.5f, Vec2(normalPos.x, nY)), readyAction,
 			DelayTime::create(2.0f), fireAction,
-			DelayTime::create(3.0f), bombAction,
+			DelayTime::create(3.0f), bombAction, DelayTime::create(0.25f), checkAction,
 			DelayTime::create(3.0f), releaseAction, NULL));
 
 	}
@@ -139,6 +158,10 @@ void  Skill::skillEffect()
 				pSkillArmature->setRotation(fRoation);
 				pSkillArmature->setPosition(pos);
 				this->addChild(pSkillArmature);
+
+				float fAngle = -fRoation * M_PI/180;
+
+				CCLOG("angle%f", -fRoation);
 			});
 		
 			pSkillArmature->runAction(Sequence::createWithTwoActions(DelayTime::create(1.5f), fireAction));
@@ -167,11 +190,25 @@ void Skill::skill1Attack(Armature* pNode)
 		pNode->getAnimation()->play("Animation3");
 	});
 
+	auto checkAction = CallFuncN::create([=](Node* pNode){
+		Rect heroRect = GameService::getInstance()->getGameScene()->getHero()->getHeroBox();
+		Vec2 bombPos = pNode->getPosition();
+		bombPos.x += Constants::DESIGN_WIDTH / 2;
+		bombPos.y += Constants::DESIGN_HEIGHT / 2;
+		bombPos = GameService::getInstance()->getGameScene()->getBackGround()->convertToNodeSpace(bombPos);
+		Rect bombRect = Rect(bombPos.x - 100 / 2, bombPos.y - 100 / 2, 100, 100);
+		if (bombRect.intersectsRect(heroRect))
+		{
+			GameService::getInstance()->getGameScene()->getHero()->hurt(10);
+		}
+	});
+
 	auto releaseAction = CallFunc::create([=](){
 		pNode->removeFromParentAndCleanup(true);
 	});
 
-	pNode->runAction(Sequence::create(EaseOut::create(MoveTo::create(fDis / 500, targetPos), 0.5f), bombAction,DelayTime::create(2.5f), releaseAction, NULL));
+	pNode->runAction(Sequence::create(EaseOut::create(MoveTo::create(fDis / 500, targetPos), 0.5f), bombAction,
+		checkAction, DelayTime::create(2.5f), releaseAction, NULL));
 }
 
 void Skill::skill2Attack(Armature* pNode)

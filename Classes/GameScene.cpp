@@ -86,33 +86,6 @@ void GameScene::initUI()
 		((SpriteBatchNode*)pNode)->getTexture()->setAntiAliasTexParameters();
 	}*/
 
-	_pPathInfo = new PathSearchInfo();
-
-	TMXLayer* _road = _pBackGround->getLayer("background");//行走路径的地图
-	Size _mapSize = _pBackGround->getMapSize();
-	for (int j = 0; j < _mapSize.height; j++) {
-		for (int i = 0; i < _mapSize.width; i++) {
-			Vec2 pos =  _road->getPositionAt(Vec2(i, j));
-			Rect tileRect = Rect(pos.x, pos.y, _pBackGround->getTileSize().width, _pBackGround->getTileSize().height);
-//			Sprite* _sp = _road->getTileAt(Point(i, j));
-
-			PathSprite* _pathSprite = new PathSprite();
-			_pathSprite->m_x = i;
-			_pathSprite->m_y = j;
-			_pathSprite->_pos = _road->getPositionAt(Vec2(i, j));
-			_pPathInfo->m_inspectArray[i][j] = _pathSprite;//把地图中所有的点一一对应放入检测列表中
-            
-            for (auto& rect : collideRects)
-            {
-                if (tileRect.intersectsRect(rect))
-                {
-                    _pPathInfo->m_inspectArray[i][j] = nullptr;
-                    break;
-                }
-            }
-		}
-	}
-
 	TMXObjectGroup *objects = _pBackGround->getObjectGroup("Objects");
 	for (auto& object : objects->getObjects())
 	{
@@ -154,8 +127,6 @@ void GameScene::initUI()
 		this->addChild(pHeroSkill, Constants::ZORDER_MONSTER);
 		pHeroSkill->setPosition(Vec2(Constants::DESIGN_WIDTH / 2, Constants::DESIGN_HEIGHT / 2));
 	}
-	
-
 }
 
 void GameScene::initTouch()
@@ -210,7 +181,7 @@ void GameScene::initHero()
 	_pHero->stand();
 
 	_pBoss = Boss::create();
-	_pBoss->setPosition(Vec2(300, 300));
+	_pBoss->setPosition(Vec2(500, 300));
 	_pBackGround->addChild(_pBoss, Constants::ZORDER_MONSTER);
 	_vMonsters.pushBack(_pBoss);
 }
@@ -277,6 +248,7 @@ void  GameScene::heroSkillCallBack(cocos2d::Ref* pRef)
     Node* pNoed = (Node*)pRef;
     int nTag = pNoed->getTag();
     if(nTag == 0){
+		_vHeroSkills.at(0)->skillEffect();
     }else if(nTag == 1){
        _vHeroSkills.at(1)->skillEffect();
     }else if(nTag == 2){

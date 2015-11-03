@@ -2,6 +2,7 @@
 #include "../Service/GameService.h"
 #include "../GameScene.h"
 #include "../Utils/Utils.h"
+#include "../Utils/LayoutUtil.h"
 #include "../Common/Constants.h"
 
 bool Monster::init()
@@ -14,10 +15,42 @@ bool Monster::init()
 
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/monster/m_00080.plist", "images/monster/m_00080.png");
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/hero/t_die_00020.plist", "images/hero/t_die_00020.png");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/monster/Game_Monster_UI.plist", "images/monster/Game_Monster_UI.png");
 	
-	_SearchInfo = new PathSearchInfo();
-	_SearchInfo = GameService::getInstance()->getGameScene()->_pPathInfo;
+
 	_pBackGround = GameService::getInstance()->getGameScene()->getBackGround();
+	_SearchInfo = new PathSearchInfo();
+	TMXLayer* _road = _pBackGround->getLayer("background");//行走路径的地图
+	Size _mapSize = _pBackGround->getMapSize();
+	for (int j = 0; j < _mapSize.height; j++) {
+		for (int i = 0; i < _mapSize.width; i++) {
+			Vec2 pos = _road->getPositionAt(Vec2(i, j));
+			Rect tileRect = Rect(pos.x, pos.y, _pBackGround->getTileSize().width, _pBackGround->getTileSize().height);
+
+			PathSprite* _pathSprite = new PathSprite();
+			_pathSprite->m_x = i;
+			_pathSprite->m_y = j;
+			_pathSprite->_pos = Vec2(tileRect.getMidX(), tileRect.getMidY());
+			_SearchInfo->m_inspectArray[i][j] = _pathSprite;//把地图中所有的点一一对应放入检测列表中
+
+			if (i == 3 && j == 8)
+			{
+				int a = 0;
+			}
+
+
+			for (auto& rect : GameService::getInstance()->getGameScene()->getCollideRects())
+			{
+				if (Utils::IsContainsRect(rect, tileRect))
+				{
+					_SearchInfo->m_inspectArray[i][j] = nullptr;
+					_pathSprite->release();
+					break;
+				}
+			}
+		}
+	}
+	
 
 	_pSprite = Sprite::createWithSpriteFrameName("m_s05_0008_0000.png");
 	this->addChild(_pSprite);
@@ -32,6 +65,17 @@ bool Monster::init()
 	}
 	standAnimation->setDelayPerUnit(0.1f);
 	_pSprite->runAction(RepeatForever::create(Animate::create(standAnimation)));
+
+	
+	//血条
+	auto pHpBg = Sprite::createWithSpriteFrameName("Game_Blood_Bg_2.png");
+	this->addChild(pHpBg);
+	LayoutUtil::layoutParentCenter(pHpBg,0, 30);
+
+	_pHpProgress = Sprite::createWithSpriteFrameName("Game_Blood_Pro_2.png");
+	_pHpProgress->setAnchorPoint(Vec2::ZERO);
+	pHpBg->addChild(_pHpProgress);
+	LayoutUtil::layoutParentCenter(_pHpProgress);
 
 	this->scheduleUpdate();
     return true;
@@ -90,40 +134,12 @@ void Monster::run()
 
 	nodePosition = Utils::getPosInMap(nodePosition, _pBackGround);
 	PathSprite* targetPath =_SearchInfo->getObjFromInspectArray((int)nodePosition.x, (int)nodePosition.y);
-	if (targetPath == nullptr)
-	{
-		targetPath = new PathSprite();
-		targetPath->m_x = nodePosition.x;
-		targetPath->m_y = nodePosition.y;
-		targetPath->_pos = _pBackGround->getLayer("background")->getPositionAt(Vec2(nodePosition.x, nodePosition.y));
-		_SearchInfo->m_inspectArray[targetPath->m_x][targetPath->m_y] = targetPath;
-	}
-	/*Vec2 targetPos = this->getRandomTarget(nodePosition);
-	targetPath = _SearchInfo->getObjFromInspectArray((int)targetPos.x, (int)targetPos.y);
-	while (targetPath == nullptr)
-	{
-	_nTarPosIndex = 0;
-	targetPos = this->getRandomTarget(targetPos);
-	targetPath = _SearchInfo->getObjFromInspectArray((int)targetPos.x, (int)targetPos.y);
-	}*/
-
+	
 	//获取触摸点, 设置为终点
 	_SearchInfo->m_endX = targetPath->m_x;
 	_SearchInfo->m_endY = targetPath->m_y;
 	//计算路径
 	calculatePath();
-
-	/*for (auto& pPath : _SearchInfo->m_openList)
-	{
-		auto sp = _pBackGround->getLayer("background")->tileAt(Vec2(pPath->m_x, pPath->m_y));
-		sp->setColor(Color3B::YELLOW);
-	}
-
-	for (auto& pPath : _SearchInfo->m_pathList)
-	{
-		auto sp = _pBackGround->getLayer("background")->tileAt(Vec2(pPath->m_x, pPath->m_y));
-		sp->setColor(Color3B::GREEN);
-	}*/
 
 	//移动物体
 	autoMove();
@@ -163,6 +179,7 @@ void Monster::attack()
 	Animate* pAtkAni = Animate::create(atkAnimation);
 	_pSprite->stopAllActions();
 	_pSprite->runAction(Sequence::create(pAtkAni, CallFunc::create(CC_CALLBACK_0(Monster::runAway,this)), NULL));
+	GameService::getInstance()->getGameScene()->getHero()->hurt(2);
 }
 
 void Monster::die()
@@ -205,45 +222,41 @@ void Monster::update(float dt)
 			GameService::getInstance()->getGameScene()->removeBubble(pBubble);
 			pBubble->runAction(Sequence::createWithTwoActions(DelayTime::create(0.2f), releaseAction));
 			
-			_nTotalHp--;
-			if (_nTotalHp <= 0)
-			{
-				this->unscheduleUpdate();
-				this->die();
-			}			
+			this->hurt(1);
 			break;
 		}
+	}
+}
+
+void Monster::hurt(float fAtk)
+{
+	_nCurHp -= fAtk;
+	float fPerfent = (float)_nCurHp / (float)_nTotalHp;
+	_pHpProgress->setScaleX(fPerfent);
+	if (_nCurHp <= 0)
+	{
+		_pHpProgress->getParent()->setVisible(false);
+		this->unscheduleUpdate();
+		this->die();
 	}
 }
 
 
 void Monster::calculatePath()
 {
-	/*for (auto& pMonster : GameService::getInstance()->getGameScene()->getMonsters())
-	{
-		if (pMonster != this)
-		{
-			Vec2 pos = Utils::getPosInMap(pMonster->getPosition(), _pBackGround);
-			PathSprite* pPath = _SearchInfo->m_inspectArray[(int)pos.x][(int)pos.y];
-			if (pPath != nullptr)
-			{
-				_SearchInfo->m_inspectArray[(int)pos.x][(int)pos.y] = nullptr;
-				_SearchInfo->m_monsterPathList.pushBack(pPath);
-			}
-		}
-	}*/
+	
 
 	//得到开始点的节点
 	PathSprite* _startNode = _SearchInfo->m_inspectArray[_SearchInfo->m_startX][_SearchInfo->m_startY];
 	//得到结束点的节点
 	PathSprite* _endNode =  _SearchInfo->m_inspectArray[ _SearchInfo->m_endX][ _SearchInfo->m_endY];
+	
 	if (_startNode == nullptr)
 	{
-		_startNode = new PathSprite();
-		_startNode->m_x = _SearchInfo->m_startX;
-		_startNode->m_y = _SearchInfo->m_startY;
-		_startNode->_pos = _pBackGround->getLayer("background")->getPositionAt(Vec2(_SearchInfo->m_startX, _SearchInfo->m_startY));
-		_startNode->_bIsTemp = true;
+		Vec2 startPos = this->getMinTile(Vec2(_SearchInfo->m_startX, _SearchInfo->m_startY));
+		_SearchInfo->m_startX = startPos.x;
+		_SearchInfo->m_startY = startPos.y;
+		_startNode = _SearchInfo->m_inspectArray[_SearchInfo->m_startX][_SearchInfo->m_startY];
 	}
 
 	//因为是开始点 把到起始点的距离设为0, F值也为0
@@ -256,6 +269,20 @@ void Monster::calculatePath()
 	 _SearchInfo->m_haveInspectList.pushBack(_startNode);
 	//然后加入开放列表
 	 _SearchInfo->m_openList.pushBack(_startNode);
+
+	 /*for (auto& pMonster : GameService::getInstance()->getGameScene()->getMonsters())
+	 {
+		 if (pMonster != this)
+		 {
+			 Vec2 pos = Utils::getPosInMap(pMonster->getPosition(), _pBackGround);
+			 PathSprite* pPath = _SearchInfo->m_inspectArray[(int)pos.x][(int)pos.y];
+			 if (pPath != nullptr)
+			 {
+				 _SearchInfo->m_inspectArray[(int)pos.x][(int)pos.y] = nullptr;
+				 _SearchInfo->m_monsterPathList.pushBack(pPath);
+			 }
+		 }
+	 }*/
 
 	PathSprite* _node = nullptr;
 	while (true)
@@ -310,7 +337,7 @@ void Monster::calculatePath()
 		_SearchInfo->m_pathList.insert(0, _node);
 		_node = _node->m_parent;
 	}
-	
+
 	/*for (auto& pPath : _SearchInfo->m_monsterPathList)
 	{
 		_SearchInfo->m_inspectArray[pPath->m_x][pPath->m_y] = pPath;
@@ -331,18 +358,6 @@ void Monster::clearPath()
 			_SearchInfo->m_inspectArray[pItem->m_x][pItem->m_y] = pItem;
 		}
 	}
-	/*for (auto& pPath : _SearchInfo->m_openList)
-	{
-		auto sp = _pBackGround->getLayer("background")->tileAt(Vec2(pPath->m_x, pPath->m_y));
-		sp->setColor(Color3B::WHITE);
-	}
-
-	for (auto& pPath : _SearchInfo->m_pathList)
-	{
-		auto sp = _pBackGround->getLayer("background")->tileAt(Vec2(pPath->m_x, pPath->m_y));
-		sp->setColor(Color3B::WHITE);
-	}*/
-
 	
 	//把移除了障碍物的地图放入检测列表中
 	 _SearchInfo->m_openList.clear();
@@ -354,51 +369,31 @@ void Monster::clearPath()
 
 void Monster::runAway()
 {
-//	_emStatus = Monster_Run;
 	Vec2 heroPos = GameService::getInstance()->getGameScene()->getHero()->getPosition();
 	heroPos = _pBackGround->convertToNodeSpace(heroPos);
-	float fR = 70;
-	int nDriection = 1;
-	if (Utils::randomPercent(50))
-	{
-		nDriection = -1;
-	}
-	float fRandomX = Utils::random(0, fR*2);
-	float fX = heroPos.x - (fR - fRandomX);
-	float fY = nDriection*sqrtf(fR*fR - (fX - heroPos.x)*(fX - heroPos.x)) + heroPos.y;
-	Vec2 targetPos = Vec2(fX, fY);
 	
-
-	for (auto& checkRect:GameService::getInstance()->getGameScene()->getCollideRects())
+	heroPos = Utils::getPosInMap(heroPos, _pBackGround);
+	Vec2 targetPos = this->getRandomTarget(heroPos);
+	_nTarPosIndex = Utils::random(1, 8);
+	PathSprite* pTargetPath = nullptr;
+	while (pTargetPath == nullptr)
 	{
-		if (checkRect.containsPoint(targetPos))
+		targetPos = this->getRandomTarget(heroPos);
+		pTargetPath = _SearchInfo->getObjFromInspectArray(targetPos.x, targetPos.y);
+		if (pTargetPath == nullptr)
 		{
-			targetPos.y = -nDriection*sqrtf(fR*fR - (fX - heroPos.x)*(fX - heroPos.x)) + heroPos.y;
-			break;
+			for (auto& pOpenPath : _SearchInfo->m_openList)
+			{
+				if (pOpenPath->m_x == targetPos.x && pOpenPath->m_y == targetPos.y)
+				{
+					pTargetPath = pOpenPath;
+					break;
+				}
+			}			
 		}
-	}
 
-	for (auto& checkRect : GameService::getInstance()->getGameScene()->getCollideRects())
-	{
-		if (checkRect.containsPoint(targetPos))
-		{
-			targetPos.x = heroPos.x - (fRandomX - fR);
-			break;
-		}
 	}
-
-	float fSideWidth = 50;
-	if (targetPos.x < fSideWidth || targetPos.x > Constants::DESIGN_WIDTH - fSideWidth)
-	{
-		targetPos.x = heroPos.x - (fRandomX - fR);
-	}
-
-	if (targetPos.y < fSideWidth || targetPos.y > Constants::DESIGN_HEIGHT - fSideWidth)
-	{
-		targetPos.y = -nDriection*sqrtf(fR*fR - (fX - heroPos.x)*(fX - heroPos.x)) + heroPos.y;
-	}
-
-	
+	targetPos = _pBackGround->getLayer("background")->getPositionAt(targetPos);
 
 	Vec2 monsterPos = this->getPosition();
 	float fAngle = Utils::getPosAngle(targetPos, monsterPos);
@@ -412,20 +407,17 @@ void Monster::runAway()
 		_pSprite->setFlippedX(false);
 	}
 
-	//if (_nLastDirection != nDirection)
+	_nLastDirection = nDirection;
+	_pSprite->stopAllActions();
+	Animation* standAnimation = Animation::create();
+	for (int i = 0; i < 6; ++i)
 	{
-		_nLastDirection = nDirection;
-		_pSprite->stopAllActions();
-		Animation* standAnimation = Animation::create();
-		for (int i = 0; i < 6; ++i)
-		{
-			string fileName = StringUtils::format("m_r0%d_0008_000%d.png", _nLastDirection, i);
-			standAnimation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(fileName));
-		}
-		standAnimation->setDelayPerUnit(0.1f);
-		_pSprite->runAction(RepeatForever::create(Animate::create(standAnimation)));
+		string fileName = StringUtils::format("m_r0%d_0008_000%d.png", _nLastDirection, i);
+		standAnimation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(fileName));
 	}
-
+	standAnimation->setDelayPerUnit(0.1f);
+	_pSprite->runAction(RepeatForever::create(Animate::create(standAnimation)));
+	
 	_nLastDirection = 0;
 	float fDis = this->getPosition().getDistance(targetPos);
 	auto pMoveAction = Sequence::create(MoveTo::create(fDis / _fSpeed, targetPos), CallFunc::create(CC_CALLBACK_0(Monster::run, this)), NULL);
@@ -456,7 +448,7 @@ void Monster::autoMove()
 	}
 	tarPos.y += nRandom * Utils::random(0, 10);
 
-	float fSideWidth = 50;
+	/*float fSideWidth = 50;
 	if (tarPos.x < fSideWidth )
 	{
 		tarPos.x = fSideWidth;
@@ -473,7 +465,7 @@ void Monster::autoMove()
 	if (tarPos.x > Constants::DESIGN_WIDTH - fSideWidth)
 	{
 		tarPos.x = Constants::DESIGN_WIDTH - fSideWidth;
-	}
+	}*/
 
 	float fDis = this->getPosition().getDistance(tarPos);
 
@@ -515,12 +507,13 @@ void Monster::autoMove()
 
 Vec2 Monster::getRandomTarget(Vec2 target)
 {
-	if (_nTarPosIndex == 0)
+	_nTarPosIndex++;
+
+	if (_nTarPosIndex > 8)
 	{
-		_nTarPosIndex = Utils::random(1, 8);
+		_nTarPosIndex = 1;
 	}
 
-	Vec2 normalPos = target;
 	int nDirection = _nTarPosIndex;
 
 	if (nDirection == 1)
@@ -560,6 +553,64 @@ Vec2 Monster::getRandomTarget(Vec2 target)
 		target.y++;
 	}
 
-
 	return  target;
+}
+
+Vec2  Monster::getMinTile(Vec2 pos)
+{
+	float fMinDis = 1000;
+	Vec2 minPos = Vec2::ZERO;
+	for (int i = 1; i < 9; i++)
+	{
+		Vec2 target = pos;
+		if (i == 1)
+		{
+			target.x--;
+			target.y--;
+		}
+		else if (i == 2)
+		{
+			target.y--;
+		}
+		else if (i == 3)
+		{
+			target.x++;
+			target.y--;
+		}
+		else if (i == 4)
+		{
+			target.x--;
+		}
+		else if (i == 5)
+		{
+			target.x++;
+		}
+		else if (i == 6)
+		{
+			target.x--;
+			target.y++;
+		}
+		else if (i == 7)
+		{
+			target.y++;
+		}
+		else if (i == 8)
+		{
+			target.x++;
+			target.y++;
+		}
+
+		PathSprite* pPath = _SearchInfo->getObjFromInspectArray(target.x, target.y);
+		if (pPath != nullptr)
+		{
+			float fDis = this->getPosition().getDistance(pPath->_pos);
+			if (fDis < fMinDis)
+			{
+				fMinDis = fDis;
+				minPos = target;
+			}
+		}
+	}
+
+	return minPos;
 }

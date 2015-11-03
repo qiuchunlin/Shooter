@@ -30,7 +30,6 @@ public:
 	void addBubble(Bubble* pBubble);
 	void removeBubble(Bubble* pBubble);
 	void killMonster(Monster* pMonster);
-	PathSearchInfo* _pPathInfo;
 	void updateMonster();
 protected:
 	void update(float delta);

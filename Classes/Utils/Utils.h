@@ -48,6 +48,8 @@ public:
 
 	static Vec2 getPosInMap(Vec2 pos, TMXTiledMap* pMap);
 
+	static bool IsContainsRect(Rect bigRect,Rect smallRect);
+
 	static float getPosAngle(Vec2 targetPos,Vec2 curPos);
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID

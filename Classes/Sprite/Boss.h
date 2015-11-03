@@ -18,6 +18,7 @@ protected:
 	void update(float dt);
 	int getDirection(float fAngle);
 	void bossAtk();
+	void die()override;
 protected:
 	
 private:

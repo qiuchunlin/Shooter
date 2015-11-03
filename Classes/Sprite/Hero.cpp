@@ -4,11 +4,16 @@
 #include "../GameScene.h"
 #include "Bubble.h"
 #include "../Utils/Utils.h"
+#include "../Utils/LayoutUtil.h"
 bool Hero::init()
 {
     if (!Sprite::init()) {
         return  false;
     }
+
+	_nFireCount = 1;
+	_bIsProtect = false;
+
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/hero/m_00050.plist", "images/hero/m_00050.png");
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/hero/t_fire_00020.plist", "images/hero/t_fire_00020.png");
 
@@ -17,6 +22,19 @@ bool Hero::init()
 	_pSprite->setPosition(Vec2(_pSprite->getContentSize().width / 2, _pSprite->getContentSize().height / 2));
 	this->addChild(_pSprite);
 	this->setContentSize(_pSprite->getContentSize());
+
+
+	//血条
+	auto pHpBg = Sprite::createWithSpriteFrameName("Game_Blood_Bg_2.png");
+	this->addChild(pHpBg);
+	LayoutUtil::layoutParentCenter(pHpBg, 0, 30);
+
+	_pHpProgress = Sprite::createWithSpriteFrameName("Game_Blood_Pro_2.png");
+	_pHpProgress->setAnchorPoint(Vec2::ZERO);
+	_pHpProgress->setColor(Color3B::GREEN);
+	pHpBg->addChild(_pHpProgress);
+	LayoutUtil::layoutParentCenter(_pHpProgress);
+
 
 	this->scheduleUpdate();
 
@@ -250,14 +268,14 @@ void Hero::run(float angle, bool bIsDirection)
 	pBackGround->setPosition(bgPos);
 
 	Vec2 heroCheckPos = pBackGround->convertToNodeSpace(this->getPosition());
-	heroCheckPos.y -= _pSprite->getContentSize().height / 5;
+//	heroCheckPos.y -= _pSprite->getContentSize().height / 5;
 	Vec2 newBgPos = Vec2::ZERO;
 	Vec2 newHeroPos = Vec2::ZERO;
 
 	vector<Rect> collideRect = GameService::getInstance()->getGameScene()->getCollideRects();
-	for (auto& rect : collideRect)
+//	for (auto& rect : collideRect)
 	{
-		if (rect.containsPoint(heroCheckPos))
+		if (IsTouched(heroCheckPos))
 		{
 			newBgPos.x = normalBgPos.x;
 			newBgPos.y = bgPos.y;
@@ -269,9 +287,9 @@ void Hero::run(float angle, bool bIsDirection)
 			pBackGround->setPosition(newBgPos);
 
 			heroCheckPos = pBackGround->convertToNodeSpace(this->getPosition());
-			heroCheckPos.y -= _pSprite->getContentSize().height / 5;
+//			heroCheckPos.y -= _pSprite->getContentSize().height / 5;
 
-			if (rect.containsPoint(heroCheckPos))
+			if (IsTouched(heroCheckPos))
 			{
 				newBgPos.x = bgPos.x;
 				newBgPos.y = normalBgPos.y;
@@ -283,9 +301,9 @@ void Hero::run(float angle, bool bIsDirection)
 				pBackGround->setPosition(newBgPos);
 
 				heroCheckPos = pBackGround->convertToNodeSpace(this->getPosition());
-				heroCheckPos.y -= _pSprite->getContentSize().height / 5;
+//				heroCheckPos.y -= _pSprite->getContentSize().height / 5;
 
-				if (rect.containsPoint(heroCheckPos))
+				if (IsTouched(heroCheckPos))
 				{
 					pBackGround->setPosition(normalBgPos);
 					this->setPosition(normalHeroPos);
@@ -296,37 +314,17 @@ void Hero::run(float angle, bool bIsDirection)
 	}
 }
 
-bool Hero::isTouched(Vec2 pos)
+bool Hero::IsTouched(Vec2 pos)
 {
-	TMXTiledMap* pBackGround = GameService::getInstance()->getGameScene()->getBackGround();
-
-	pos = pBackGround->convertToNodeSpace(pos);
-	pos = Utils::getPosInMap(pos, pBackGround);
-	
-
-	TMXLayer* _road = pBackGround->getLayer("Walk");//行走路径的地图
-	Sprite* _sp = _road->getTileAt(pos);
-	if (_sp) {
-		return false;
-	}
-	else
+	vector<Rect> collideRect = GameService::getInstance()->getGameScene()->getCollideRects();
+	for (auto& rect : collideRect)
 	{
-		return true;
-	}
-/*
-	auto pMetaLayer = pBackGround->getLayer("Meta");
-
-	int tileGid = pMetaLayer->getTileGIDAt(pos);
-	if (tileGid) {
-		auto properties = pBackGround->getPropertiesForGID(tileGid).asValueMap();
-		if (!properties.empty()) {
-			auto collision = properties["Collidable"].asString();
-			if ("true" == collision) {
-				return true;
-			}
+		if (rect.containsPoint(pos))
+		{
+			return true;
 		}
 	}
-	return false;*/
+	return false;
 }
 
 int Hero::getDirection(float angle)
@@ -394,6 +392,7 @@ void Hero::stand()
 
 void Hero::fire(float targetAngle)
 {
+//	return;
 	int nDirection = _nLastDirection;
 	if (targetAngle != -1)
 	{
@@ -518,8 +517,7 @@ void Hero::fire(float targetAngle)
 		_pFire->setRotation(90 - fAngle);
 		_pFire->setScale(0.5f);
 
-		int nBubbleCount = 1;
-		for (int i = 0; i<nBubbleCount; i++) {
+		for (int i = 0; i<_nFireCount; i++) {
             Bubble* pBubble = Bubble::create();
             this->getParent()->addChild(pBubble,Constants::ZORDER_MONSTER);
             GameService::getInstance()->getGameScene()->addBubble(pBubble);
@@ -557,4 +555,31 @@ void Hero::fire(float targetAngle)
 		this->runAction(Sequence::createWithTwoActions(DelayTime::create(i*0.1f), fireBubble));
 	}
 
+}
+
+void  Hero::hurt(float fAtk)
+{
+	if (_bIsProtect)
+	{
+		return;
+	}
+	_nCurHp -= fAtk;
+	float fPercent = (float)_nCurHp / (float)_nTotalHp;
+	if (fPercent < 0)
+	{
+		fPercent = 0;
+	}	
+	_pHpProgress->setScaleX(fPercent);
+	if (_nCurHp <= 0)
+	{
+		//game over
+	}
+}
+
+Rect Hero::getHeroBox()
+{
+	Vec2 pos = this->getPosition();
+	pos = GameService::getInstance()->getGameScene()->getBackGround()->convertToNodeSpace(pos);
+	Rect heroRect = Rect(pos.x - _pSprite->getContentSize().width / 2, pos.y - _pSprite->getContentSize().height/2, _pSprite->getContentSize().width, _pSprite->getContentSize().height);
+	return heroRect;
 }

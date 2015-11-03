@@ -26,13 +26,21 @@ public:
 	
 	void autoFire();
 
+	void hurt(float fAtk);
+
+	CC_SYNTHESIZE(int, _nFireCount, FireCount);
+	CC_SYNTHESIZE(bool, _bIsProtect, IsProtect);
+
+	Rect getHeroBox();
+
+
 private:
 	void update(float dt);
 	void findMonsterFire();
 	void fire(float fAngle);
     bool init();
 	int getDirection(float fAngle);
-	bool isTouched(Vec2 pos);
+	bool IsTouched(Vec2 pos);
 private:
 	int _nLastDirection = 0;
 	HeroStatus _emStatus;
@@ -40,6 +48,10 @@ private:
 	Sprite* _pFire = nullptr;
 	Vec2 _runTargetPos = Vec2::ZERO;
 	float _fMinGapTime = 0;
+	int _nTotalHp = 300;
+	int _nCurHp = _nTotalHp;
+	Sprite* _pHpProgress;
+
 
 };
 #endif

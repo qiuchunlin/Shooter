@@ -6,8 +6,8 @@ USING_NS_CC;
 using namespace std;
 using namespace Config;
 
-#define MAP_WIDTH 23//要比tmx中的map大
-#define MAP_HEIGHT 15
+#define MAP_WIDTH 46//要比tmx中的map大
+#define MAP_HEIGHT 30
 class PathSprite:public Ref
 {
 
@@ -121,11 +121,13 @@ public:
 	CC_SYNTHESIZE(MonsterStatus, _emStatus, Status);
 	CC_SYNTHESIZE(MonsterType, _emType, MonsterType);
 	virtual void run();
+
+	void hurt(float fAtk);
 protected:
 	bool init();
 	
 	virtual void attack();
-	void die();
+	virtual void die();
 	void update(float dt);
 
 	void runAway();
@@ -142,19 +144,27 @@ protected:
 
 	Vec2 getRandomTarget(Vec2 target);
 
+	Vec2 getMinTile(Vec2 pos);
+
+	
+
 protected:
 
 	int m_playerMoveStep;//人物当前的行程的索引
 
 	PathSearchInfo* _SearchInfo;
+
+	Sprite* _pHpProgress;
 	
 	int _nLastDirection = 0;
 
 	int _nTotalHp = 20;
 
+	int _nCurHp = _nTotalHp;
+
 	TMXTiledMap* _pBackGround;
 
 	float _fSpeed = 150;
-	int _nTarPosIndex = 0;
+	int _nTarPosIndex = 1;
 };
 #endif

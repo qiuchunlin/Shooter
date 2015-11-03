@@ -25,6 +25,18 @@ bool Utils::randomPercent(float fSuccessPercent)
     return  false;
 }
 
+bool Utils::IsContainsRect(Rect bigRect, Rect smallRect)
+{
+	if (smallRect.getMinX() > bigRect.getMinX() &&
+		smallRect.getMaxX() < bigRect.getMaxX() &&
+		smallRect.getMinY() > bigRect.getMinY() &&
+		smallRect.getMaxY() < bigRect.getMaxY())
+	{
+		return true;
+	}
+	return false;
+}
+
 Vec2 Utils::getPosInMap(Vec2 pos, TMXTiledMap* pMap)
 {
 	int x = pos.x / pMap->getTileSize().width;

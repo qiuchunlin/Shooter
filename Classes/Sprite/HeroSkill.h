@@ -14,6 +14,5 @@ protected:
 	bool init();
 private:
 	int _nSkillId = 0;
-	Armature* _pSkillArmature = nullptr;
 };
 #endif
