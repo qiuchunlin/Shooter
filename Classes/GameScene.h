@@ -19,6 +19,7 @@ public:
 	CREATE_FUNC(GameScene);
 	CC_SYNTHESIZE(Hero*, _pHero, Hero);
 	CC_SYNTHESIZE(TMXTiledMap*, _pBackGround, BackGround);
+	CC_SYNTHESIZE(Node*, _pBackGroundUp, BackGroundUp);
 	CC_SYNTHESIZE(Vector<Bubble*>, _vBubbles, Bubbles);
 	CC_SYNTHESIZE(Vector<Monster*>, _vMonsters, Monsters);
 	CC_SYNTHESIZE(vector<Rect>, collideRects, CollideRects);
@@ -26,6 +27,8 @@ public:
 	CC_SYNTHESIZE(Joystick*, _pRightJoystick, RightJoystick);
 
 	CC_SYNTHESIZE(Boss*, _pBoss, Boss);
+
+	CC_SYNTHESIZE(PathSearchInfo*, _pathSearchInfo, PathSearchInfo);
 	
 	void addBubble(Bubble* pBubble);
 	void removeBubble(Bubble* pBubble);
@@ -34,8 +37,9 @@ public:
 protected:
 	void update(float delta);
 	void initUI();
-	void initTouch();
 	void initHero();
+	void initMonster();
+
     
     void heroSkillCallBack(cocos2d::Ref* pNode);
 

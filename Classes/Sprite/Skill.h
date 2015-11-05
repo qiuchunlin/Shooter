@@ -22,6 +22,7 @@ protected:
 private:
 	int _nSkillId = 0;
 	float _fCdTime = 0;
+	Vector<Armature*> _vArmatures;
 
 };
 #endif

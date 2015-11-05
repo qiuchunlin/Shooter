@@ -33,6 +33,7 @@ public:
 
 	Rect getHeroBox();
 
+	Vec2 getHeroCheckPos();
 
 private:
 	void update(float dt);
@@ -45,6 +46,7 @@ private:
 	int _nLastDirection = 0;
 	HeroStatus _emStatus;
 	float _fAngle = 0;
+	float _fBubbleAngle = 0;
 	Sprite* _pFire = nullptr;
 	Vec2 _runTargetPos = Vec2::ZERO;
 	float _fMinGapTime = 0;

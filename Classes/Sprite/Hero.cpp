@@ -15,8 +15,8 @@ bool Hero::init()
 	_bIsProtect = false;
 
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/hero/m_00050.plist", "images/hero/m_00050.png");
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/hero/t_fire_00020.plist", "images/hero/t_fire_00020.png");
-
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/hero/fire.plist", "images/hero/fire.png");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/monster/Game_Monster_UI.plist", "images/monster/Game_Monster_UI.png");
 
 	_pSprite = Sprite::createWithSpriteFrameName("m_r04_0005_0000.png");
 	_pSprite->setPosition(Vec2(_pSprite->getContentSize().width / 2, _pSprite->getContentSize().height / 2));
@@ -58,7 +58,7 @@ void Hero::handFire()
 	_fMinGapTime = 0.5f;*/
 	this->stopAllActions();
 	auto handFire = CallFuncN::create(CC_CALLBACK_0(Hero::fire, this, -1));
-	this->runAction(RepeatForever::create(Sequence::create(handFire, DelayTime::create(0.5f), NULL)));
+	this->runAction(RepeatForever::create(Sequence::create(handFire, DelayTime::create(0.2f), NULL)));
 }
 
 void Hero::autoFire()
@@ -70,7 +70,7 @@ void Hero::autoFire()
 	_fMinGapTime = 0.5f;*/
 	this->stopAllActions();
 	auto autoFire = CallFunc::create(CC_CALLBACK_0(Hero::findMonsterFire, this));
-	this->runAction(RepeatForever::create(Sequence::create(autoFire, DelayTime::create(0.5f), NULL)));
+	this->runAction(RepeatForever::create(Sequence::create(autoFire, DelayTime::create(0.15f), NULL)));
 }
 
 void Hero::findMonsterFire()
@@ -139,6 +139,10 @@ void Hero::run(float angle, bool bIsDirection)
 			{
 				_fAngle = angle;
 			}
+		}
+		else
+		{
+			_fBubbleAngle = angle;
 		}
 		
 		if (angle > 90 && angle < 270)
@@ -267,51 +271,57 @@ void Hero::run(float angle, bool bIsDirection)
 
 	pBackGround->setPosition(bgPos);
 
-	Vec2 heroCheckPos = pBackGround->convertToNodeSpace(this->getPosition());
+	Vec2 heroCheckPos = pBackGround->convertToNodeSpace(this->getHeroCheckPos());
 //	heroCheckPos.y -= _pSprite->getContentSize().height / 5;
 	Vec2 newBgPos = Vec2::ZERO;
 	Vec2 newHeroPos = Vec2::ZERO;
 
 	vector<Rect> collideRect = GameService::getInstance()->getGameScene()->getCollideRects();
-//	for (auto& rect : collideRect)
+
+	if (IsTouched(heroCheckPos))
 	{
+		newBgPos.x = normalBgPos.x;
+		newBgPos.y = bgPos.y;
+
+		newHeroPos.x = normalHeroPos.x;
+		newHeroPos.y = heroPos.y;
+
+		this->setPosition(newHeroPos);
+		pBackGround->setPosition(newBgPos);
+
+		heroCheckPos = pBackGround->convertToNodeSpace(this->getHeroCheckPos());
+//			heroCheckPos.y -= _pSprite->getContentSize().height / 5;
+
 		if (IsTouched(heroCheckPos))
 		{
-			newBgPos.x = normalBgPos.x;
-			newBgPos.y = bgPos.y;
+			newBgPos.x = bgPos.x;
+			newBgPos.y = normalBgPos.y;
 
-			newHeroPos.x = normalHeroPos.x;
-			newHeroPos.y = heroPos.y;
+			newHeroPos.x = heroPos.x;
+			newHeroPos.y = normalHeroPos.y;
 
 			this->setPosition(newHeroPos);
 			pBackGround->setPosition(newBgPos);
 
-			heroCheckPos = pBackGround->convertToNodeSpace(this->getPosition());
-//			heroCheckPos.y -= _pSprite->getContentSize().height / 5;
+			heroCheckPos = pBackGround->convertToNodeSpace(this->getHeroCheckPos());
+//				heroCheckPos.y -= _pSprite->getContentSize().height / 5;
 
 			if (IsTouched(heroCheckPos))
 			{
-				newBgPos.x = bgPos.x;
-				newBgPos.y = normalBgPos.y;
-
-				newHeroPos.x = heroPos.x;
-				newHeroPos.y = normalHeroPos.y;
-
-				this->setPosition(newHeroPos);
-				pBackGround->setPosition(newBgPos);
-
-				heroCheckPos = pBackGround->convertToNodeSpace(this->getPosition());
-//				heroCheckPos.y -= _pSprite->getContentSize().height / 5;
-
-				if (IsTouched(heroCheckPos))
-				{
-					pBackGround->setPosition(normalBgPos);
-					this->setPosition(normalHeroPos);
-				}
-
+				pBackGround->setPosition(normalBgPos);
+				this->setPosition(normalHeroPos);
 			}
+
 		}
 	}
+	GameService::getInstance()->getGameScene()->getBackGroundUp()->setPosition(pBackGround->getPosition());
+}
+
+Vec2 Hero::getHeroCheckPos()
+{
+	Vec2 heroCheckPos = this->getPosition();
+	heroCheckPos.y -= _pSprite->getContentSize().height / 5;
+	return heroCheckPos;
 }
 
 bool Hero::IsTouched(Vec2 pos)
@@ -392,15 +402,17 @@ void Hero::stand()
 
 void Hero::fire(float targetAngle)
 {
-//	return;
 	int nDirection = _nLastDirection;
 	if (targetAngle != -1)
 	{
 		nDirection = this->getDirection(targetAngle);
-		
+	}
+	else
+	{
+		targetAngle = _fBubbleAngle;
 	}
 
-	auto fireBubble = CallFunc::create([=](){
+//	auto fireBubble = CallFunc::create([=](){
 		float fAngle = 0;
 		Vec2 firePos = _pSprite->getPosition();
 		Vec2 bubblePos = this->getPosition();
@@ -502,11 +514,11 @@ void Hero::fire(float targetAngle)
 			_pFire->stopAllActions();
 			_pFire->removeFromParentAndCleanup(true);
 		}
-		_pFire = Sprite::createWithSpriteFrameName("t_fire_0002_0001.png");
+		_pFire = Sprite::createWithSpriteFrameName("qiangh1.png");
 		Animation* fireAnimation = Animation::create();
 		for (int i = 1; i < 5; ++i)
 		{
-			string fileName = StringUtils::format("t_fire_0002_000%d.png", i);
+			string fileName = StringUtils::format("qiangh%d.png", i);
 			fireAnimation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(fileName));
 		}
 		fireAnimation->setDelayPerUnit(0.1f);
@@ -514,16 +526,16 @@ void Hero::fire(float targetAngle)
 		_pFire->setPosition(firePos);
 		_pFire->setFlippedY(true);
 		this->addChild(_pFire);
-		_pFire->setRotation(90 - fAngle);
-		_pFire->setScale(0.5f);
+		_pFire->setRotation(- fAngle);
+		_pFire->setScale(0.7f);
 
 		for (int i = 0; i<_nFireCount; i++) {
             Bubble* pBubble = Bubble::create();
-            this->getParent()->addChild(pBubble,Constants::ZORDER_MONSTER);
+            this->getParent()->addChild(pBubble,Constants::ZORDER_MONSTER + 1);
             GameService::getInstance()->getGameScene()->addBubble(pBubble);
             
             pBubble->setPosition(bubblePos);
-            float bubbleAngle = fAngle;
+			float bubbleAngle = targetAngle;
             if (i == 1) {
                 bubbleAngle += 15;
             }
@@ -544,16 +556,16 @@ void Hero::fire(float targetAngle)
                 pNode->removeFromParentAndCleanup(true);
             });
             
-            pBubble->runAction(Sequence::create(MoveBy::create(2.0f, Vec2(fX, fY)), releaseBubble,NULL));
+            pBubble->runAction(Sequence::create(MoveBy::create(1.0f, Vec2(fX, fY)), releaseBubble,NULL));
         }
         
 
-	});
-
-	for (int i = 0; i < 3; i++)
-	{
-		this->runAction(Sequence::createWithTwoActions(DelayTime::create(i*0.1f), fireBubble));
-	}
+//	});
+//	int i = 0;
+//	for (int i = 0; i < 3; i++)
+	//{
+	//	this->runAction(Sequence::createWithTwoActions(DelayTime::create(i*0.1f), fireBubble));
+	//}
 
 }
 

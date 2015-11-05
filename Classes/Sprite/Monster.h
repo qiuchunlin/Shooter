@@ -36,7 +36,6 @@ public:
 	 Vector<PathSprite*> m_pathList;//路径列表
 	 Vector<PathSprite*> m_haveInspectList;//检测过的列表
 	 Vector<PathSprite*> m_monsterPathList;//路径列表
-
 	
 	 float calculateTwoObjDistance(PathSprite* obj1, PathSprite* obj2)//计算两个物体间的距离
 	{

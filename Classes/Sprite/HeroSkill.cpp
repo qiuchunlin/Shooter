@@ -54,7 +54,7 @@ void  HeroSkill::skillEffect()
 		ArmatureDataManager::getInstance()->addArmatureFileInfo("images/skills/bomb_skill/t_sk_0012.ExportJson");
 		Armature* pSkillArmature = Armature::create("t_sk_0012");
         pSkillArmature->getAnimation()->play("Animation1");
-        GameService::getInstance()->getGameScene()->getBackGround()->addChild(pSkillArmature);
+        GameService::getInstance()->getGameScene()->getBackGroundUp()->addChild(pSkillArmature);
 		pSkillArmature->setPosition(center);
         
         auto fireAction = CallFuncN::create([](Node* pNode){
@@ -69,7 +69,7 @@ void  HeroSkill::skillEffect()
 			{
 				if (rect.intersectsRect(pMonster->getBoundingBox()))
 				{
-					pMonster->hurt(10);
+					pMonster->hurt(20);
 				}
 			}
 		});

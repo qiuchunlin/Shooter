@@ -204,30 +204,9 @@ void Joystick::update(float delta)
 
 	if (fX != 0 || fY !=0)
 	{
-		/*if (_bIsLeft)
+		if (GameService::getInstance()->getGameScene()->getHero()!=nullptr)
 		{
-			if (!GameService::getInstance()->getIsAutoFire())
-			{
-				GameService::getInstance()->setIsAutoFire(true);
-				GameService::getInstance()->getGameScene()->getHero()->autoFire();
-			}		
+			GameService::getInstance()->getGameScene()->getHero()->run(fAngle, _bIsLeft);
 		}
-		else
-		{
-			GameService::getInstance()->setIsAutoFire(false);
-		}*/
-
-		GameService::getInstance()->getGameScene()->getHero()->run(fAngle, _bIsLeft);
 	}
-	/*else
-	{
-		if (_bIsLeft)
-		{
-			if (GameService::getInstance()->getIsAutoFire())
-			{
-				GameService::getInstance()->setIsAutoFire(false);
-				GameService::getInstance()->getGameScene()->getHero()->stand();
-			}
-		}	
-	}*/
 }

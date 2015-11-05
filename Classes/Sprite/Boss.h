@@ -23,7 +23,9 @@ protected:
 	
 private:
 	Armature* _pBossArmature = nullptr;
-	float _fSkillCdTime = 0;
+	float _fSkillCdTime = 10;
 	Vector<Skill*> _vSkills;
+	float _fLastAngle = 0;
+	int _nMonsterAction = 0;
 };
 #endif

@@ -22,33 +22,22 @@ bool Boss::init()
 
 	_pBackGround = GameService::getInstance()->getGameScene()->getBackGround();
 	_SearchInfo = new PathSearchInfo();
-	TMXLayer* _road = _pBackGround->getLayer("background");//行走路径的地图
+
 	Size _mapSize = _pBackGround->getMapSize();
 	for (int j = 0; j < _mapSize.height; j++) {
 		for (int i = 0; i < _mapSize.width; i++) {
-			Vec2 pos = _road->getPositionAt(Vec2(i, j));
-			Rect tileRect = Rect(pos.x, pos.y, _pBackGround->getTileSize().width, _pBackGround->getTileSize().height);
-
-			PathSprite* _pathSprite = new PathSprite();
-			_pathSprite->m_x = i;
-			_pathSprite->m_y = j;
-			_pathSprite->_pos = Vec2(tileRect.getMidX(), tileRect.getMidY());
-			_SearchInfo->m_inspectArray[i][j] = _pathSprite;//把地图中所有的点一一对应放入检测列表中
-
-			if (i == 3 && j == 8)
+			PathSprite* pathSprite = GameService::getInstance()->getGameScene()->getPathSearchInfo()->m_inspectArray[i][j];
+			if (pathSprite != nullptr)
 			{
-				int a = 0;
+				PathSprite* newPath = new PathSprite();
+				newPath->m_x = pathSprite->m_x;
+				newPath->m_y = pathSprite->m_y;
+				newPath->_pos = pathSprite->_pos;
+				_SearchInfo->m_inspectArray[i][j] = newPath;
 			}
-
-
-			for (auto& rect : GameService::getInstance()->getGameScene()->getCollideRects())
+			else
 			{
-				if (Utils::IsContainsRect(rect, tileRect))
-				{
-					_SearchInfo->m_inspectArray[i][j] = nullptr;
-					_pathSprite->release();
-					break;
-				}
+				_SearchInfo->m_inspectArray[i][j] = nullptr;
 			}
 		}
 	}
@@ -71,7 +60,7 @@ bool Boss::init()
 	for (int i = 0; i < 3;i++)
 	{
 		Skill* pSkill = Skill::create(i);
-		GameService::getInstance()->getGameScene()->getBackGround()->addChild(pSkill);
+		GameService::getInstance()->getGameScene()->getBackGroundUp()->addChild(pSkill);
 		pSkill->setPosition(center);
 		_vSkills.pushBack(pSkill);
 	}
@@ -115,13 +104,13 @@ void Boss::run()
 	heroPos = _pBackGround->convertToNodeSpace(heroPos);
 
 	float fDis = this->getPosition().getDistance(heroPos);
-	if (_emStatus != Monster_Stand || fDis < 300)
+	if (_emStatus != Monster_Stand || fDis < 300 || fDis > 600)
 	{
 		return;
 	}
-
 	Vec2 monsterPos = this->getPosition();
 	float fAngle = Utils::getPosAngle(heroPos, monsterPos);
+	_fLastAngle = fAngle;
 	int nDirection = this->getDirection(fAngle);
 	if (fAngle > 90 && fAngle < 270)
 	{
@@ -132,8 +121,9 @@ void Boss::run()
 		_pBossArmature->setScaleX(1);
 	}
 
-	if (_nLastDirection != nDirection)
+	if (_nLastDirection != nDirection || _nMonsterAction != 1)
 	{
+		_nMonsterAction = 1;
 		_nLastDirection = nDirection;
 		_pBossArmature->getAnimation()->stop();
 		string sArmtureName = StringUtils::format("m_r0%d", _nLastDirection);
@@ -206,22 +196,30 @@ void Boss::update(float dt)
 		_fSkillCdTime -= dt;
 	}
 
-	auto releaseAction = CallFuncN::create([](Node* pNode){
-		pNode->removeFromParentAndCleanup(true);
-	});
 	Vector<Bubble*> vBubbles = GameService::getInstance()->getGameScene()->getBubbles();
 	for (auto& pBubble : vBubbles)
 	{
 		Vec2 bubblePos = this->getParent()->convertToNodeSpace(pBubble->getPosition());
 		Vec2 monsterPos = this->getPosition();
 		Rect bubbRect = Rect(bubblePos.x - pBubble->getContentSize().width / 2, bubblePos.y - pBubble->getContentSize().height / 2, pBubble->getContentSize().width, pBubble->getContentSize().height);
-		Rect monsterRect = Rect(monsterPos.x - _pBossArmature->getContentSize().width / 2, monsterPos.y - _pBossArmature->getContentSize().height / 2, _pBossArmature->getContentSize().width, _pBossArmature->getContentSize().height);
+		Rect monsterRect = Rect(monsterPos.x - 100 / 2, monsterPos.y - 150 / 2, 100, 150);
 		if (monsterRect.intersectsRect(bubbRect))
 		{
 			GameService::getInstance()->getGameScene()->removeBubble(pBubble);
-			pBubble->runAction(Sequence::createWithTwoActions(DelayTime::create(0.2f), releaseAction));
+			pBubble->removeFromParentAndCleanup(true);
 
-			this->hurt(1);
+			this->hurt(5);
+
+			if (_emStatus != Monster_Die)
+			{
+				if (_pBossArmature->getActionByTag(10))
+				{
+					_pBossArmature->stopActionByTag(10);
+				}
+				auto sequence = Sequence::createWithTwoActions(TintTo::create(0.1f, Color3B::RED), TintTo::create(0.1f, Color3B::WHITE));
+				sequence->setTag(10);
+				_pBossArmature->runAction(sequence);
+			}
 			break;
 		}
 	}
@@ -244,21 +242,39 @@ void Boss::attack()
 
 void Boss::bossAtk()
 {
+	bool bIsCdTime = false;
+
 	if (_fSkillCdTime > 0)
 	{
-		return;
+		bIsCdTime = true;
 	}
-	_fSkillCdTime = 10;
 	int nRandom = Utils::random(0, 2);
 	if (_vSkills.at(nRandom)->IsInCd())
 	{
+		bIsCdTime = true;
+	}
+
+	if (bIsCdTime)
+	{
+		int nDirection = this->getDirection(_fLastAngle);
+		if (_nLastDirection != nDirection || _nMonsterAction != 2)
+		{
+			_nMonsterAction = 2;
+			_nLastDirection = nDirection;
+			_pBossArmature->getAnimation()->stop();
+			string sArmtureName = StringUtils::format("m_s0%d", _nLastDirection);
+			_pBossArmature->getAnimation()->play(sArmtureName);
+		}
+
 		return;
 	}
+
 	Vec2 heroPos = GameService::getInstance()->getGameScene()->getHero()->getPosition();
 	heroPos = _pBackGround->convertToNodeSpace(heroPos);
 
 	Vec2 monsterPos = this->getPosition();
 	float fAngle = Utils::getPosAngle(heroPos, monsterPos);
+	_fLastAngle = fAngle;
 	int nDirection = this->getDirection(fAngle);
 	if (fAngle > 90 && fAngle < 270)
 	{
@@ -269,6 +285,7 @@ void Boss::bossAtk()
 		_pBossArmature->setScaleX(1);
 	}
 
+	_fSkillCdTime = 10;
 	if (_nLastDirection != nDirection)
 	{
 		_nLastDirection = nDirection;

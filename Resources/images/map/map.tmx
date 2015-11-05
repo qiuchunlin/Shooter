@@ -1,27 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="46" height="30" tilewidth="32" tileheight="32" nextobjectid="48">
- <tileset firstgid="1" name="map1" tilewidth="1470" tileheight="960" tilecount="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="46" height="30" tilewidth="32" tileheight="32" nextobjectid="67">
+ <tileset firstgid="1" name="map1" tilewidth="1472" tileheight="960" tilecount="1">
   <image source="map1.jpg" width="1472" height="960"/>
-  <tile id="0">
-   <properties>
-    <property name="MonsterType" value="1"/>
-   </properties>
-  </tile>
+ </tileset>
+ <tileset firstgid="2" name="car" tilewidth="415" tileheight="329" tilecount="1">
+  <image source="car.png" width="451" height="329"/>
+ </tileset>
+ <tileset firstgid="3" name="left_house" tilewidth="838" tileheight="287" tilecount="1">
+  <image source="left_house.png" width="838" height="287"/>
+ </tileset>
+ <tileset firstgid="4" name="light" tilewidth="79" tileheight="142" tilecount="1">
+  <image source="light.png" width="79" height="142"/>
+ </tileset>
+ <tileset firstgid="5" name="right_house" tilewidth="197" tileheight="379" tilecount="1">
+  <image source="right_house.png" width="197" height="379"/>
+ </tileset>
+ <tileset firstgid="6" name="light_road" tilewidth="304" tileheight="369" tilecount="1">
+  <image source="light_road.png" width="304" height="369"/>
  </tileset>
  <layer name="background" width="46" height="30">
   <data encoding="base64" compression="zlib">
    eJztzjENAAAIA7Dh3zQe9hCSVkETAAAAAIBf5jpQWhZIAAI=
   </data>
  </layer>
+ <objectgroup draworder="index" name="obj_bg">
+  <object id="51" gid="2" x="627.667" y="634.333" width="415" height="329">
+   <properties>
+    <property name="fileName" value="car.png"/>
+    <property name="zorder" value="1"/>
+   </properties>
+  </object>
+  <object id="53" gid="3" x="-0.333333" y="961.667" width="838" height="287">
+   <properties>
+    <property name="fileName" value="left_house.png"/>
+   </properties>
+  </object>
+  <object id="56" gid="4" x="595.667" y="851" width="79" height="142">
+   <properties>
+    <property name="fileName" value="light.png"/>
+   </properties>
+  </object>
+  <object id="59" gid="5" x="1272.67" y="958.333" width="197" height="379">
+   <properties>
+    <property name="fileName" value="right_house.png"/>
+   </properties>
+  </object>
+  <object id="61" gid="6" x="658.667" y="884" width="304" height="369">
+   <properties>
+    <property name="fileName" value="light_road.png"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup name="collide_people">
-  <object id="2" x="4" y="682" width="506" height="288"/>
-  <object id="3" x="370" y="826" width="478" height="142"/>
+  <object id="2" x="4" y="665.333" width="506" height="304.667"/>
+  <object id="3" x="370" y="796" width="478" height="172"/>
   <object id="4" x="1267" y="0" width="209" height="966"/>
   <object id="5" x="-10" y="-26" width="235.333" height="274"/>
   <object id="6" x="424" y="-18" width="242.667" height="299.333"/>
   <object id="7" x="150.667" y="-42" width="282.667" height="374"/>
-  <object id="9" x="686" y="408" width="260.667" height="149.333"/>
-  <object id="10" x="889.333" y="373.333" width="177.333" height="94.6667"/>
+  <object id="9" x="697.333" y="442" width="249.333" height="113.333"/>
+  <object id="10" x="889.333" y="382" width="170" height="104.667"/>
   <object id="46" x="660" y="-34.6667" width="282.667" height="205.667"/>
   <object id="47" x="888" y="-1.6665" width="245.333" height="299.333"/>
  </objectgroup>

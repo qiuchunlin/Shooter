@@ -15,42 +15,30 @@ bool Monster::init()
 
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/monster/m_00080.plist", "images/monster/m_00080.png");
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/hero/t_die_00020.plist", "images/hero/t_die_00020.png");
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/monster/Game_Monster_UI.plist", "images/monster/Game_Monster_UI.png");
 	
 
 	_pBackGround = GameService::getInstance()->getGameScene()->getBackGround();
 	_SearchInfo = new PathSearchInfo();
-	TMXLayer* _road = _pBackGround->getLayer("background");//行走路径的地图
+
 	Size _mapSize = _pBackGround->getMapSize();
 	for (int j = 0; j < _mapSize.height; j++) {
 		for (int i = 0; i < _mapSize.width; i++) {
-			Vec2 pos = _road->getPositionAt(Vec2(i, j));
-			Rect tileRect = Rect(pos.x, pos.y, _pBackGround->getTileSize().width, _pBackGround->getTileSize().height);
-
-			PathSprite* _pathSprite = new PathSprite();
-			_pathSprite->m_x = i;
-			_pathSprite->m_y = j;
-			_pathSprite->_pos = Vec2(tileRect.getMidX(), tileRect.getMidY());
-			_SearchInfo->m_inspectArray[i][j] = _pathSprite;//把地图中所有的点一一对应放入检测列表中
-
-			if (i == 3 && j == 8)
+			PathSprite* pathSprite = GameService::getInstance()->getGameScene()->getPathSearchInfo()->m_inspectArray[i][j];
+			if (pathSprite!=nullptr)
 			{
-				int a = 0;
+				PathSprite* newPath = new PathSprite();
+				newPath->m_x = pathSprite->m_x;
+				newPath->m_y = pathSprite->m_y;
+				newPath->_pos = pathSprite->_pos;
+				_SearchInfo->m_inspectArray[i][j] = newPath;
 			}
-
-
-			for (auto& rect : GameService::getInstance()->getGameScene()->getCollideRects())
+			else
 			{
-				if (Utils::IsContainsRect(rect, tileRect))
-				{
-					_SearchInfo->m_inspectArray[i][j] = nullptr;
-					_pathSprite->release();
-					break;
-				}
+				_SearchInfo->m_inspectArray[i][j] = nullptr;
 			}
 		}
 	}
-	
+
 
 	_pSprite = Sprite::createWithSpriteFrameName("m_s05_0008_0000.png");
 	this->addChild(_pSprite);
@@ -92,7 +80,7 @@ void Monster::run()
 
 	this->stopActionByTag(100);
 
-	Vec2 heroPos = GameService::getInstance()->getGameScene()->getHero()->getPosition();
+	Vec2 heroPos = GameService::getInstance()->getGameScene()->getHero()->getHeroCheckPos();
 
 	auto nodePosition = _pBackGround->convertToNodeSpace(heroPos);
 
@@ -207,9 +195,9 @@ void Monster::die()
 
 void Monster::update(float dt)
 {
-	auto releaseAction = CallFuncN::create([](Node* pNode){
+	/*auto releaseAction = CallFuncN::create([](Node* pNode){
 		pNode->removeFromParentAndCleanup(true);
-	});
+	});*/
 	Vector<Bubble*> vBubbles = GameService::getInstance()->getGameScene()->getBubbles();
 	for (auto& pBubble : vBubbles)
 	{
@@ -220,9 +208,9 @@ void Monster::update(float dt)
 		if (monsterRect.intersectsRect(bubbRect))
 		{
 			GameService::getInstance()->getGameScene()->removeBubble(pBubble);
-			pBubble->runAction(Sequence::createWithTwoActions(DelayTime::create(0.2f), releaseAction));
+			pBubble->removeFromParentAndCleanup(true);
 			
-			this->hurt(1);
+			this->hurt(5);
 			break;
 		}
 	}
@@ -230,15 +218,30 @@ void Monster::update(float dt)
 
 void Monster::hurt(float fAtk)
 {
-	_nCurHp -= fAtk;
-	float fPerfent = (float)_nCurHp / (float)_nTotalHp;
-	_pHpProgress->setScaleX(fPerfent);
-	if (_nCurHp <= 0)
+	if (_emStatus!= Monster_Die)
 	{
-		_pHpProgress->getParent()->setVisible(false);
-		this->unscheduleUpdate();
-		this->die();
+		if (_emType != Type_Boss)
+		{
+			if (_pSprite->getActionByTag(10))
+			{
+				_pSprite->stopActionByTag(10);
+			}
+			auto sequence = Sequence::createWithTwoActions(TintTo::create(0.1f, Color3B::RED), TintTo::create(0.1f, Color3B::WHITE));
+			sequence->setTag(10);
+			_pSprite->runAction(sequence);
+		}
+		
+		_nCurHp -= fAtk;
+		float fPerfent = (float)_nCurHp / (float)_nTotalHp;
+		_pHpProgress->setScaleX(fPerfent);
+		if (_nCurHp <= 0)
+		{
+			_pHpProgress->getParent()->setVisible(false);
+			this->unscheduleUpdate();
+			this->die();
+		}
 	}
+	
 }
 
 
@@ -369,7 +372,7 @@ void Monster::clearPath()
 
 void Monster::runAway()
 {
-	Vec2 heroPos = GameService::getInstance()->getGameScene()->getHero()->getPosition();
+	Vec2 heroPos = GameService::getInstance()->getGameScene()->getHero()->getHeroCheckPos();
 	heroPos = _pBackGround->convertToNodeSpace(heroPos);
 	
 	heroPos = Utils::getPosInMap(heroPos, _pBackGround);
