@@ -100,7 +100,7 @@ void GameScene::initUI()
 		collideRects.push_back(collodeRect);
 	}
 
-	_pathSearchInfo = new PathSearchInfo();
+	_pAStarInfo = new AStarInfo();
 	TMXLayer* _road = _pBackGround->getLayer("background");//行走路径的地图
 	Size _mapSize = _pBackGround->getMapSize();
 	for (int j = 0; j < _mapSize.height; j++) {
@@ -108,17 +108,17 @@ void GameScene::initUI()
 			Vec2 pos = _road->getPositionAt(Vec2(i, j));
 			Rect tileRect = Rect(pos.x, pos.y, _pBackGround->getTileSize().width, _pBackGround->getTileSize().height);
 
-			PathSprite* _pathSprite = new PathSprite();
-			_pathSprite->m_x = i;
-			_pathSprite->m_y = j;
-			_pathSprite->_pos = Vec2(tileRect.getMidX(), tileRect.getMidY());
-			_pathSearchInfo->m_inspectArray[i][j] = _pathSprite;//把地图中所有的点一一对应放入检测列表中
+			PathItem* _pathSprite = new PathItem();
+			_pathSprite->_nX = i;
+			_pathSprite->_nY = j;
+			_pathSprite->_posInMap = Vec2(tileRect.getMidX(), tileRect.getMidY());
+			_pAStarInfo->_aSearchArr[i][j] = _pathSprite;//把地图中所有的点一一对应放入检测列表中
 
 			for (auto& rect : GameService::getInstance()->getGameScene()->getCollideRects())
 			{
 				if (Utils::IsContainsRect(rect, tileRect))
 				{
-					_pathSearchInfo->m_inspectArray[i][j] = nullptr;
+					_pAStarInfo->_aSearchArr[i][j] = nullptr;
 					_pathSprite->release();
 					break;
 				}

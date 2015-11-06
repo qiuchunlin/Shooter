@@ -4,11 +4,13 @@
 #include "cocos2d.h"
 USING_NS_CC;
 
-#include "Sprite/Monster.h"
+
 #include "Sprite/Hero.h"
 #include "Sprite/Bubble.h"
 #include "ui/CocosGUI.h"
 #include "Sprite/HeroSkill.h"
+#include "Utils/AStar.h"
+#include "Sprite/Monster.h"
 class Boss;
 class Joystick;
 class GameScene : public Layer
@@ -28,7 +30,7 @@ public:
 
 	CC_SYNTHESIZE(Boss*, _pBoss, Boss);
 
-	CC_SYNTHESIZE(PathSearchInfo*, _pathSearchInfo, PathSearchInfo);
+	CC_SYNTHESIZE(AStarInfo*, _pAStarInfo, AStarInfo);
 	
 	void addBubble(Bubble* pBubble);
 	void removeBubble(Bubble* pBubble);

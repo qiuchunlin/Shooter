@@ -21,26 +21,7 @@ bool Boss::init()
 	_emType = Type_Boss;
 
 	_pBackGround = GameService::getInstance()->getGameScene()->getBackGround();
-	_SearchInfo = new PathSearchInfo();
-
-	Size _mapSize = _pBackGround->getMapSize();
-	for (int j = 0; j < _mapSize.height; j++) {
-		for (int i = 0; i < _mapSize.width; i++) {
-			PathSprite* pathSprite = GameService::getInstance()->getGameScene()->getPathSearchInfo()->m_inspectArray[i][j];
-			if (pathSprite != nullptr)
-			{
-				PathSprite* newPath = new PathSprite();
-				newPath->m_x = pathSprite->m_x;
-				newPath->m_y = pathSprite->m_y;
-				newPath->_pos = pathSprite->_pos;
-				_SearchInfo->m_inspectArray[i][j] = newPath;
-			}
-			else
-			{
-				_SearchInfo->m_inspectArray[i][j] = nullptr;
-			}
-		}
-	}
+	_AStarInfo = GameService::getInstance()->getGameScene()->getAStarInfo()->clone();
 
 	//血条
 	auto pHpBg = Sprite::createWithSpriteFrameName("Game_Blood_Bg_2.png");
@@ -131,28 +112,28 @@ void Boss::run()
 	}
 
 	Point startPos = Utils::getPosInMap(this->getPosition(), _pBackGround);
-	//设置起始和终点
-	_SearchInfo->m_startX = startPos.x;
-	_SearchInfo->m_startY = startPos.y;
 
-	////清除之前的路径
-	clearPath();
+	//设置起始和终点
+	_AStarInfo->_nStartX = startPos.x;
+	_AStarInfo->_nStartY = startPos.y;
+	_AStarInfo->clearPath();
+	m_playerMoveStep = 0;
 
 	heroPos = Utils::getPosInMap(heroPos, _pBackGround);
-	PathSprite* targetPath = _SearchInfo->getObjFromInspectArray((int)heroPos.x, (int)heroPos.y);
+	PathItem* targetPath = _AStarInfo->getFromSearchList((int)heroPos.x, (int)heroPos.y);
 	if (targetPath == nullptr)
 	{
-		targetPath = new PathSprite();
-		targetPath->m_x = heroPos.x;
-		targetPath->m_y = heroPos.y;
-		targetPath->_pos = _pBackGround->getLayer("background")->getPositionAt(Vec2(heroPos.x, heroPos.y));
-		_SearchInfo->m_inspectArray[targetPath->m_x][targetPath->m_y] = targetPath;
+		targetPath = new PathItem();
+		targetPath->_nX = heroPos.x;
+		targetPath->_nY = heroPos.y;
+		targetPath->_posInMap = _pBackGround->getLayer("background")->getPositionAt(Vec2(heroPos.x, heroPos.y));
+		_AStarInfo->_aSearchArr[targetPath->_nX][targetPath->_nY] = targetPath;
 	}
 
-	_SearchInfo->m_endX = targetPath->m_x;
-	_SearchInfo->m_endY = targetPath->m_y;
-	//计算路径
-	calculatePath();
+	_AStarInfo->_nEndX = targetPath->_nX;
+	_AStarInfo->_nEndY = targetPath->_nY;
+
+	_AStarInfo->calculatePath(this);
 	//移动物体
 	autoMove();
 

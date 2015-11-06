@@ -402,6 +402,7 @@ void Hero::stand()
 
 void Hero::fire(float targetAngle)
 {
+	return;
 	int nDirection = _nLastDirection;
 	if (targetAngle != -1)
 	{
@@ -412,161 +413,152 @@ void Hero::fire(float targetAngle)
 		targetAngle = _fBubbleAngle;
 	}
 
-//	auto fireBubble = CallFunc::create([=](){
-		float fAngle = 0;
-		Vec2 firePos = _pSprite->getPosition();
-		Vec2 bubblePos = this->getPosition();
-		switch (nDirection)
+	float fAngle = 0;
+	Vec2 firePos = _pSprite->getPosition();
+	Vec2 bubblePos = this->getPosition();
+	switch (nDirection)
+	{
+	case 1:
+		fAngle = 270;
+		firePos.y -= 60;
+		bubblePos.y -= 60;
+		break;
+	case 2:
+		fAngle = 345;
+		if (_pSprite->isFlippedX())
 		{
-		case 1:
-			fAngle = 270;
-			firePos.y -= 60;
-			bubblePos.y -= 60;
-			break;
-		case 2:
-			fAngle = 345;
-			if (_pSprite->isFlippedX())
-			{
-				fAngle = 180 - fAngle;
-				firePos.x -= 50;
-				firePos.y -= 25;
-				bubblePos.x -= 50;
-				bubblePos.y -= 25;
-			}
-			else
-			{
-				firePos.x += 50;
-				firePos.y -= 20;
-				bubblePos.x += 50;
-				bubblePos.y -= 20;
-			}
-			break;
-		case 3:
-			fAngle = 360;
-			if (_pSprite->isFlippedX())
-			{
-				fAngle = 180;
-				firePos.x -= 60;
-				firePos.y -= 5;
-				bubblePos.x -= 60;
-				bubblePos.y -= 5;
-			}
-			else
-			{
-				firePos.x += 60;
-				bubblePos.x += 60;
-			}
-			break;
-		case 4:
-			fAngle = 15;
-			if (_pSprite->isFlippedX())
-			{
-				fAngle = 180 - fAngle;
-				firePos.x -= 55;
-				firePos.y += 10;
-				bubblePos.x -= 55;
-				bubblePos.y += 10;
-			}
-			else
-			{
-				firePos.x += 55;
-				firePos.y += 15;
-				bubblePos.x += 55;
-				bubblePos.y += 15;
-			}
-
-			break;
-		case 5:
-			fAngle = 40;
-			if (_pSprite->isFlippedX())
-			{
-				fAngle = 180 - fAngle;
-				firePos.x -= 45;
-				firePos.y += 25;
-				bubblePos.x -= 45;
-				bubblePos.y += 25;
-			}
-			else
-			{
-				firePos.x += 45;
-				firePos.y += 30;
-				bubblePos.x += 45;
-				bubblePos.y += 30;
-			}
-			break;
-		case 6:
-			firePos.y += 60;
-			bubblePos.y += 60;
-			fAngle = 90;
-			break;
-		default:
-			return;
-			break;
+			fAngle = 180 - fAngle;
+			firePos.x -= 50;
+			firePos.y -= 25;
+			bubblePos.x -= 50;
+			bubblePos.y -= 25;
+		}
+		else
+		{
+			firePos.x += 50;
+			firePos.y -= 20;
+			bubblePos.x += 50;
+			bubblePos.y -= 20;
+		}
+		break;
+	case 3:
+		fAngle = 360;
+		if (_pSprite->isFlippedX())
+		{
+			fAngle = 180;
+			firePos.x -= 60;
+			firePos.y -= 5;
+			bubblePos.x -= 60;
+			bubblePos.y -= 5;
+		}
+		else
+		{
+			firePos.x += 60;
+			bubblePos.x += 60;
+		}
+		break;
+	case 4:
+		fAngle = 15;
+		if (_pSprite->isFlippedX())
+		{
+			fAngle = 180 - fAngle;
+			firePos.x -= 55;
+			firePos.y += 10;
+			bubblePos.x -= 55;
+			bubblePos.y += 10;
+		}
+		else
+		{
+			firePos.x += 55;
+			firePos.y += 15;
+			bubblePos.x += 55;
+			bubblePos.y += 15;
 		}
 
-        auto releaseAction = CallFunc::create([=](){
-			_pFire->removeFromParentAndCleanup(true);
-			_pFire = nullptr;
+		break;
+	case 5:
+		fAngle = 40;
+		if (_pSprite->isFlippedX())
+		{
+			fAngle = 180 - fAngle;
+			firePos.x -= 45;
+			firePos.y += 25;
+			bubblePos.x -= 45;
+			bubblePos.y += 25;
+		}
+		else
+		{
+			firePos.x += 45;
+			firePos.y += 30;
+			bubblePos.x += 45;
+			bubblePos.y += 30;
+		}
+		break;
+	case 6:
+		firePos.y += 60;
+		bubblePos.y += 60;
+		fAngle = 90;
+		break;
+	default:
+		return;
+		break;
+	}
+
+	auto releaseAction = CallFunc::create([=](){
+		_pFire->removeFromParentAndCleanup(true);
+		_pFire = nullptr;
+	});
+
+	if (_pFire != nullptr)
+	{
+		_pFire->stopAllActions();
+		_pFire->removeFromParentAndCleanup(true);
+	}
+	_pFire = Sprite::createWithSpriteFrameName("qiangh1.png");
+	Animation* fireAnimation = Animation::create();
+	for (int i = 1; i < 5; ++i)
+	{
+		string fileName = StringUtils::format("qiangh%d.png", i);
+		fireAnimation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(fileName));
+	}
+	fireAnimation->setDelayPerUnit(0.1f);
+	_pFire->runAction(Sequence::create(Animate::create(fireAnimation), FadeOut::create(0.2f), releaseAction, NULL));
+	_pFire->setPosition(firePos);
+	_pFire->setFlippedY(true);
+	this->addChild(_pFire);
+	_pFire->setRotation(-fAngle);
+	_pFire->setScale(0.7f);
+
+	for (int i = 0; i < _nFireCount; i++) {
+		Bubble* pBubble = Bubble::create();
+		this->getParent()->addChild(pBubble, Constants::ZORDER_MONSTER + 1);
+		GameService::getInstance()->getGameScene()->addBubble(pBubble);
+
+		pBubble->setPosition(bubblePos);
+		float bubbleAngle = targetAngle;
+		if (i == 1) {
+			bubbleAngle += 15;
+		}
+		else if (i == 2){
+			bubbleAngle -= 15;
+		}
+
+		pBubble->setRotation(-bubbleAngle);
+
+		bubbleAngle = bubbleAngle * M_PI / 180.0f;
+		float fX = 1200 * cosf(bubbleAngle);
+		float fY = 1200 * sinf(bubbleAngle);
+
+		auto releaseBubble = CallFuncN::create([](Node* pNode){
+			Bubble* pBubble = (Bubble*)pNode;
+			GameService::getInstance()->getGameScene()->removeBubble(pBubble);
+
+			pNode->removeFromParentAndCleanup(true);
 		});
 
-		if (_pFire != nullptr)
-		{
-			_pFire->stopAllActions();
-			_pFire->removeFromParentAndCleanup(true);
-		}
-		_pFire = Sprite::createWithSpriteFrameName("qiangh1.png");
-		Animation* fireAnimation = Animation::create();
-		for (int i = 1; i < 5; ++i)
-		{
-			string fileName = StringUtils::format("qiangh%d.png", i);
-			fireAnimation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(fileName));
-		}
-		fireAnimation->setDelayPerUnit(0.1f);
-		_pFire->runAction(Sequence::create(Animate::create(fireAnimation), FadeOut::create(0.2f), releaseAction, NULL));
-		_pFire->setPosition(firePos);
-		_pFire->setFlippedY(true);
-		this->addChild(_pFire);
-		_pFire->setRotation(- fAngle);
-		_pFire->setScale(0.7f);
-
-		for (int i = 0; i<_nFireCount; i++) {
-            Bubble* pBubble = Bubble::create();
-            this->getParent()->addChild(pBubble,Constants::ZORDER_MONSTER + 1);
-            GameService::getInstance()->getGameScene()->addBubble(pBubble);
-            
-            pBubble->setPosition(bubblePos);
-			float bubbleAngle = targetAngle;
-            if (i == 1) {
-                bubbleAngle += 15;
-            }
-            else if(i == 2){
-                bubbleAngle -= 15;
-            }
-            
-            pBubble->setRotation(-bubbleAngle);
-            
-            bubbleAngle = bubbleAngle * M_PI / 180.0f;
-            float fX = 1200 * cosf(bubbleAngle);
-            float fY = 1200 * sinf(bubbleAngle);
-            
-            auto releaseBubble = CallFuncN::create([](Node* pNode){
-                Bubble* pBubble = (Bubble*)pNode;
-                GameService::getInstance()->getGameScene()->removeBubble(pBubble);
-                
-                pNode->removeFromParentAndCleanup(true);
-            });
-            
-            pBubble->runAction(Sequence::create(MoveBy::create(1.0f, Vec2(fX, fY)), releaseBubble,NULL));
-        }
-        
-
-//	});
-//	int i = 0;
-//	for (int i = 0; i < 3; i++)
-	//{
-	//	this->runAction(Sequence::createWithTwoActions(DelayTime::create(i*0.1f), fireBubble));
-	//}
-
+		pBubble->runAction(Sequence::create(MoveBy::create(1.0f, Vec2(fX, fY)), releaseBubble, NULL));
+	}
+  
 }
 
 void  Hero::hurt(float fAtk)
