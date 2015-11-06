@@ -402,7 +402,7 @@ void Hero::stand()
 
 void Hero::fire(float targetAngle)
 {
-	return;
+//	return;
 	int nDirection = _nLastDirection;
 	if (targetAngle != -1)
 	{

@@ -39,7 +39,7 @@ void  Skill::skillEffect()
 	{
 		return;
 	}
-	
+
 	Vec2 center = Vec2(Constants::DESIGN_WIDTH / 2, Constants::DESIGN_HEIGHT / 2);
 	center = GameService::getInstance()->getGameScene()->getBackGround()->convertToNodeSpace(center);
 
@@ -51,14 +51,16 @@ void  Skill::skillEffect()
 
 		for (int i = 0; i < 10; i++)
 		{
-			int nX = Constants::DESIGN_WIDTH / 2 - 200 - Utils::random(0, 2 * (Constants::DESIGN_WIDTH / 2 - 200));
-			int nY = Constants::DESIGN_HEIGHT / 2 - 200 - Utils::random(0, 2 * (Constants::DESIGN_HEIGHT / 2 - 200));
-			Vec2 normalPos = Vec2(nX, nY);
-			normalPos += posGap;
+			int nX = 200 + Utils::random(0, Constants::DESIGN_WIDTH - 400);
+			int nY = 200 + Utils::random(0, Constants::DESIGN_HEIGHT - 400);
+
+			Vec2 targetPos = Vec2(nX, nY);
+			targetPos = GameService::getInstance()->getGameScene()->getBackGround()->convertToNodeSpace(targetPos);
+
 			Armature* pSkillArmature = Armature::create("t_sk_0019");
 			pSkillArmature->getAnimation()->play("Animation2");
-			this->addChild(pSkillArmature);
-			pSkillArmature->setPosition(normalPos);
+			GameService::getInstance()->getGameScene()->getBackGroundUp()->addChild(pSkillArmature);
+			pSkillArmature->setPosition(targetPos);
 
 			auto skillAtk = CallFunc::create(CC_CALLBACK_0(Skill::skill1Attack, this, pSkillArmature));
 
@@ -109,8 +111,8 @@ void  Skill::skillEffect()
 
 		Armature* pSkillArmature = Armature::create("t_sk_0010");
 		pSkillArmature->getAnimation()->play("Animation1");
-		this->addChild(pSkillArmature);
-		this->setPosition(curPos);
+		GameService::getInstance()->getGameScene()->getBackGround()->addChild(pSkillArmature);
+		pSkillArmature->setPosition(curPos);
 		pSkillArmature->setRotation(-fAngle);
         
    
@@ -141,7 +143,7 @@ void  Skill::skillEffect()
 			pSkillArmature->getAnimation()->play("Animation1", -1, 0);
 			pSkillArmature->setRotation(fRoation);
 			pSkillArmature->setPosition(pos);
-			this->addChild(pSkillArmature);
+			GameService::getInstance()->getGameScene()->getBackGroundUp()->addChild(pSkillArmature);
 
 			pSkillArmature->runAction(Sequence::create(DelayTime::create(0.5f), checkAction, DelayTime::create(3.0f), releaseAction, NULL));
 		});	
@@ -156,7 +158,6 @@ void Skill::skill1Attack(Armature* pNode)
 {
 	Vec2 targetPos = pNode->getPosition();
 	Vec2 normalPos = Vec2(targetPos.x, Constants::DESIGN_HEIGHT + 100);
-	normalPos = GameService::getInstance()->getGameScene()->getBackGround()->convertToNodeSpace(normalPos);
 	normalPos.x = targetPos.x;
 	pNode->setPosition(normalPos);
 	float fDis = normalPos.getDistance(targetPos);
@@ -174,14 +175,7 @@ void Skill::skill1Attack(Armature* pNode)
 
 	auto checkAction = CallFuncN::create([=](Node* pNode){
 		Rect heroRect = GameService::getInstance()->getGameScene()->getHero()->getHeroBox();
-		Vec2 center = Vec2(Constants::DESIGN_WIDTH / 2, Constants::DESIGN_HEIGHT / 2);
-		center = GameService::getInstance()->getGameScene()->getBackGround()->convertToNodeSpace(center);
-		Vec2 posGap = center - this->getPosition();
-
-		Vec2 bombPos = pNode->getPosition() - posGap;
-		bombPos.x += Constants::DESIGN_WIDTH / 2;
-		bombPos.y += Constants::DESIGN_HEIGHT / 2;
-		bombPos = GameService::getInstance()->getGameScene()->getBackGround()->convertToNodeSpace(bombPos);
+		Vec2 bombPos = pNode->getPosition();
 		Rect bombRect = Rect(bombPos.x - 60 / 2, bombPos.y - 60 / 2, 60, 60);
 		if (bombRect.intersectsRect(heroRect))
 		{

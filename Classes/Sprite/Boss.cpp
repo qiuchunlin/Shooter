@@ -15,7 +15,7 @@ bool Boss::init()
 	this->addChild(_pBossArmature);
 
 	_fSpeed = 50;
-	_nTotalHp = 100;
+	_nTotalHp = 1000;
 	_nCurHp = _nTotalHp;
 	_emStatus = Monster_Stand;
 	_emType = Type_Boss;
@@ -41,7 +41,7 @@ bool Boss::init()
 	for (int i = 0; i < 3;i++)
 	{
 		Skill* pSkill = Skill::create(i);
-		GameService::getInstance()->getGameScene()->getBackGroundUp()->addChild(pSkill);
+		GameService::getInstance()->getGameScene()->getBackGround()->addChild(pSkill);
 		pSkill->setPosition(center);
 		_vSkills.pushBack(pSkill);
 	}
