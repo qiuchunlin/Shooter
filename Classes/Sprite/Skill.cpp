@@ -157,7 +157,7 @@ void  Skill::skillEffect()
 void Skill::skill1Attack(Armature* pNode)
 {
 	Vec2 targetPos = pNode->getPosition();
-	Vec2 normalPos = Vec2(targetPos.x, Constants::DESIGN_HEIGHT + 100);
+	Vec2 normalPos = Vec2(targetPos.x, targetPos.y + Constants::DESIGN_HEIGHT + 100);
 	normalPos.x = targetPos.x;
 	pNode->setPosition(normalPos);
 	float fDis = normalPos.getDistance(targetPos);
